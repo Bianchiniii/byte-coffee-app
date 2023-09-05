@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Cupcake</string>
+    <string name="app_logo">Ícone app</string>
+
+    <!-- SIGN UP-->
+    <string name="sign_up_title">Criar nova conta</string>
+    <string name="sign_up_description">Junte-se a nós e adoce sua vida! Cadastre-se agora e tenha acesso aos cupcakes mais deliciosos da cidade</string>
+    <string name="sign_up_your_name">Seu nome</string>
+    <string name="sign_up_last_name">Último nome</string>
+    <string name="sign_up_email">Email</string>
+    <string name="sign_up_password">Senha</string>
+    <string name="sign_up_finish_sign_up">Concluir cadastro</string>
+    <string name="sign_up_show_password">Mostrar senha</string>
+    <string name="sign_up_hide_password">Esconder senha</string>
+</resources>
