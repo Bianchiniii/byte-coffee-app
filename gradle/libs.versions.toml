@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.0-alpha16"
+agp = "8.3.0-alpha06"
 kotlin = "1.8.10"
 core-ktx = "1.10.1"
 junit = "4.13.2"
@@ -7,17 +7,18 @@ androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.1"
 activity-compose = "1.7.2"
-compose-bom = "2023.08.00"
+compose-bom = "2023.09.02"
 resouce-utils = "1.0"
 okhttp = "4.10.0"
 retrofit = "2.1.0"
 gson = "2.10"
 converter-gson = "2.1.0"
 hilt = "2.44"
-glide = "4.16.0"
+glide = "1.0.0-beta01"
 interceptor = "4.11.0"
 material-icons = "1.6.0-alpha04"
 navigation = "2.7.1"
+ui-android = "1.5.2"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -40,10 +41,11 @@ okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converter-gson" }
-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glide" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "interceptor" }
 navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "ui-android" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.material3)
     implementation(libs.material.icons)
     implementation(libs.resources.utils)
+    implementation(libs.androidx.ui.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

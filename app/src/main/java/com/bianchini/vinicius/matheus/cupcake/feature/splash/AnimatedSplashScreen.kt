@@ -1,4 +1,4 @@
-package com.bianchini.vinicius.matheus.cupcake
+package com.bianchini.vinicius.matheus.cupcake.feature.splash
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -21,13 +21,15 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import com.bianchini.vinicius.matheus.cupcake.R
+import com.bianchini.vinicius.matheus.cupcake.graph.AuthScreenRoutes
 import com.bianchini.vinicius.matheus.cupcake.ui.theme.Primary
 import kotlinx.coroutines.delay
 
 @Composable
 fun AnimatedSplashScreen(
-    navController: NavHostController
+    navController: NavController
 ) {
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
@@ -42,7 +44,7 @@ fun AnimatedSplashScreen(
         startAnimation = true
         delay(4000)
         navController.popBackStack()
-        navController.navigate(ScreenRoutes.SignUp.route)
+        navController.navigate(AuthScreenRoutes.SignUp.route)
     }
     Splash(alpha = alphaAnim.value)
 }

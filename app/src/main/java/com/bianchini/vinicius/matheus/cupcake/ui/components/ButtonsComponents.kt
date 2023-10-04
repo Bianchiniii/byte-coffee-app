@@ -23,9 +23,10 @@ fun ButtonPrimary(
     value: String,
     firstGradientColor: Color,
     secondGradientColor: Color,
+    onClick: () -> Unit
 ) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),
