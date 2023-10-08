@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" >
+<resources>
     <string name="app_name">Cupcake</string>
     <string name="app_logo">Ícone app</string>
 

@@ -43,7 +43,6 @@ fun HomeNavGraph(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.DETAILS,
@@ -65,12 +64,12 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
                 }
             )
         ) {
-            it.arguments?.getParcelable("food", Food::class.java)?.let { food ->
+           /* it.arguments?.getParcelable("food", Food::class.java)?.let { food ->
                 ProductScreen(
                     navController = navController,
                     food = food
                 )
-            }
+            }*/
 
         }
     }
