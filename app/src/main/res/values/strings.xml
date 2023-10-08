@@ -1,15 +1,31 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" >
     <string name="app_name">Cupcake</string>
     <string name="app_logo">Ícone app</string>
 
     <!-- SIGN UP-->
+    <string name="sign_up">Entrar</string>
     <string name="sign_up_title">Criar nova conta</string>
     <string name="sign_up_description">Junte-se a nós e adoce sua vida! Cadastre-se agora e tenha acesso aos cupcakes mais deliciosos da cidade</string>
     <string name="sign_up_your_name">Seu nome</string>
     <string name="sign_up_last_name">Último nome</string>
     <string name="sign_up_email">Email</string>
     <string name="sign_up_password">Senha</string>
+    <string name="sign_up_placeholder_password">Insira sua senha</string>
     <string name="sign_up_finish_sign_up">Concluir cadastro</string>
     <string name="sign_up_show_password">Mostrar senha</string>
     <string name="sign_up_hide_password">Esconder senha</string>
+    <string name="sign_up_create_account">Criar nova conta</string>
+
+    <!-- Product Details -->
+    <string name="product_details_select_size">%1$d - Escolha o tamanho</string>
+    <string name="product_details_about">Sobre</string>
+    
+    <!-- Home Screen -->
+    <string name="home_screen_categories">Categorias</string>
+    
+    <!-- Utils -->
+    <string name="util_load_image">Carregando imagem…</string>
+    <string name="util_navigate_back">Anterior</string>
+    <string name="util_notification_icon">Ícone Notificação</string>
+    <string name="util_profile_image">Imagem de perfil</string>
 </resources>
