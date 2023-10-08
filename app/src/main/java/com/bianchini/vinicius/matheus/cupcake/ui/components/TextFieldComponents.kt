@@ -1,9 +1,8 @@
 package com.bianchini.vinicius.matheus.cupcake.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
@@ -15,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import com.bianchini.vinicius.matheus.cupcake.R
 import com.bianchini.vinicius.matheus.cupcake.ui.theme.BgColor
 import com.bianchini.vinicius.matheus.cupcake.ui.theme.Primary
@@ -28,6 +27,7 @@ import com.bianchini.vinicius.matheus.cupcake.ui.theme.Primary
 @Composable
 fun TextFieldComponents(
     labelValue: String,
+    modifier: Modifier,
     leadingIcon: ImageVector
 ) {
     val textValue = remember {
@@ -35,9 +35,7 @@ fun TextFieldComponents(
     }
 
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(4.dp)),
+        modifier = modifier,
         label = { Text(text = labelValue) },
         value = textValue.value,
         onValueChange = { textValue.value = it },
@@ -62,7 +60,9 @@ fun TextFieldComponents(
 @Composable
 fun PasswordTextField(
     labelValue: String,
-    leadingIcon: ImageVector
+    placeholder: String,
+    leadingIcon: ImageVector,
+    modifier: Modifier
 ) {
     val passwordValue = remember {
         mutableStateOf("")
@@ -73,10 +73,9 @@ fun PasswordTextField(
     }
 
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(4.dp)),
+        modifier = modifier,
         label = { Text(text = labelValue) },
+        placeholder = { Text(text = placeholder) },
         value = passwordValue.value,
         onValueChange = { passwordValue.value = it },
         colors = OutlinedTextFieldDefaults.colors(
@@ -110,5 +109,42 @@ fun PasswordTextField(
         visualTransformation = if (passwordVisible.value) {
             VisualTransformation.None
         } else PasswordVisualTransformation()
+    )
+}
+
+
+@Composable
+fun LoginField(
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    labelValue: String,
+    placeholder: String,
+) {
+    val focusManager = LocalFocusManager.current
+    val leadingIcon = @Composable {
+        Icon(
+            Icons.Default.Person,
+            contentDescription = "Ícone usuário",
+            tint = Primary
+        )
+    }
+
+    val emailValue = remember {
+        mutableStateOf("")
+    }
+
+    OutlinedTextField(
+        modifier = modifier,
+        label = { Text(text = labelValue) },
+        value = emailValue.value,
+        // TODO: onvalueChanged
+        placeholder = { Text(text = placeholder) },
+        onValueChange = { emailValue.value = it },
+        leadingIcon = leadingIcon,
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        singleLine = true,
+        visualTransformation = VisualTransformation.None
     )
 }
