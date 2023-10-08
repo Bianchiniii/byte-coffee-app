@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
@@ -16,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,26 +50,40 @@ fun SignUpScreen(navController: NavController) {
                 stringResource(id = R.string.sign_up_title)
             )
             HeadingText(
-                stringResource(id = R.string.sign_up_description)
+                stringResource(id = R.string.sign_up_description),
+                modifier = Modifier.wrapContentSize()
             )
             Spacer(
                 modifier = Modifier.height(20.dp)
             )
             TextFieldComponents(
                 labelValue = stringResource(id = R.string.sign_up_your_name),
-                Icons.Filled.Person
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                leadingIcon = Icons.Filled.Person,
             )
             TextFieldComponents(
                 labelValue = stringResource(id = R.string.sign_up_last_name),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
                 Icons.Filled.Person
             )
             TextFieldComponents(
                 labelValue = stringResource(id = R.string.sign_up_email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
                 Icons.Filled.Email
             )
             PasswordTextField(
                 labelValue = stringResource(id = R.string.sign_up_password),
-                Icons.Filled.Password
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                leadingIcon = Icons.Filled.Password,
+                placeholder = stringResource(id = R.string.sign_up_placeholder_password),
             )
             Spacer(
                 modifier = Modifier.height(80.dp)
