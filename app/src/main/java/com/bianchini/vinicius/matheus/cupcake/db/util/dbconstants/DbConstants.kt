@@ -7,4 +7,6 @@ object DbConstants {
     const val COLUMN_LAST_NAME = "last_name"
     const val COLUMN_EMAIL = "email"
     const val COLUMN_PROFILE_IMAGE = "profile_image"
+
+    const val APP_DATABASE_NAME = "app_database"
 }
