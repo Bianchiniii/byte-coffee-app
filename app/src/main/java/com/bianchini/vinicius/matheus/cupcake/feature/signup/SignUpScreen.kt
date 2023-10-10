@@ -85,9 +85,7 @@ fun SignUpScreen(navController: NavController) {
                 leadingIcon = Icons.Filled.Password,
                 placeholder = stringResource(id = R.string.sign_up_placeholder_password),
             )
-            Spacer(
-                modifier = Modifier.height(80.dp)
-            )
+            Spacer(modifier = Modifier.weight(1f))
             ButtonPrimary(
                 onClick = {
                     // TODO: adicionar validações de form

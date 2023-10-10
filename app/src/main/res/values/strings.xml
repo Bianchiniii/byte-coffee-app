@@ -17,12 +17,19 @@
     <string name="sign_up_create_account">Criar nova conta</string>
 
     <!-- Product Details -->
-    <string name="product_details_select_size">%1$d - Escolha o tamanho</string>
+    <string name="product_details_select_size">%1$s - Escolha o tamanho</string>
     <string name="product_details_about">Sobre</string>
-    
+    <string name="product_details_add_item">Adicionar no carrinho</string>
+
     <!-- Home Screen -->
     <string name="home_screen_categories">Categorias</string>
-    
+
+    <!-- Profile -->
+    <string name="profile_change_password">Nova senha</string>
+    <string name="profile_save_changes">Salvar alterações</string>
+    <string name="profile_change_photo">Alterar foto</string>
+    <string name="profile_photo_image">Imagem de perfil</string>
+
     <!-- Utils -->
     <string name="util_load_image">Carregando imagem…</string>
     <string name="util_navigate_back">Anterior</string>

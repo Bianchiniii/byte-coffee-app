@@ -3,6 +3,7 @@ package com.bianchini.vinicius.matheus.cupcake.feature.product
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -66,7 +67,9 @@ fun ProductScreen(
                 GlideImageLoader(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(it)
+                        .padding(
+                            PaddingValues(bottom = it.calculateBottomPadding())
+                        )
                         .weight(1f),
                     contentScale = ContentScale.FillBounds,
                     path = "",

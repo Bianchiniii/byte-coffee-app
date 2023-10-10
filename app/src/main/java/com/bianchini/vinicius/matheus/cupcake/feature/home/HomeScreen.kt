@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -121,9 +122,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         },
         modifier = Modifier.fillMaxSize(),
         content = {
-            HomeNavGraph(navController)
-
-            it.calculateBottomPadding()
+            HomeNavGraph(navController, it)
         }
     )
 }
@@ -158,11 +157,14 @@ fun BottomNavigation(navController: NavHostController) {
 }
 
 @Composable
-fun ContentHomeScreen(navController: NavHostController) {
+fun ContentHomeScreen(
+    navController: NavHostController,
+    paddingValues: PaddingValues,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(paddingValues = paddingValues)
             .background(color = Background)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
@@ -254,7 +256,7 @@ fun ListFoodItems(
                 foodItem
             ) {
                 navController.navigate(
-                    "${DetailsScreenRoutes.ProductScreen.route}/${foodItem}"
+                    DetailsScreenRoutes.ProductScreen.route
                 )
             }
         }
@@ -329,5 +331,5 @@ fun AvatarAndNotification(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreviewOfSignUpScreen() {
-    ContentHomeScreen(navController = rememberNavController())
+//    ContentHomeScreen(navController = rememberNavController())
 }
