@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.ui)
     implementation(libs.coil)
+    implementation(libs.room)
     implementation(libs.glide)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)

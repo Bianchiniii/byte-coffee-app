@@ -20,6 +20,7 @@ material-icons = "1.6.0-alpha04"
 navigation = "2.7.1"
 ui-android = "1.5.2"
 coil = "2.0.0-rc01"
+room = "2.5.2"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -48,6 +49,7 @@ interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", ve
 navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "ui-android" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
