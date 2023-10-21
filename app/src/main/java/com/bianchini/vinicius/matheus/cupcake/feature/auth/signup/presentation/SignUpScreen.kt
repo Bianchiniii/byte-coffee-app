@@ -1,0 +1,120 @@
+package com.bianchini.vinicius.matheus.cupcake.feature.auth.signup.presentation
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import com.bianchini.vinicius.matheus.cupcake.R
+import com.bianchini.vinicius.matheus.cupcake.feature.auth.commun.viewmodel.AuthViewModel
+import com.bianchini.vinicius.matheus.cupcake.graph.Graph
+import com.bianchini.vinicius.matheus.cupcake.ui.components.ButtonPrimary
+import com.bianchini.vinicius.matheus.cupcake.ui.components.HeadingText
+import com.bianchini.vinicius.matheus.cupcake.ui.components.NormalText
+import com.bianchini.vinicius.matheus.cupcake.ui.components.PasswordTextField
+import com.bianchini.vinicius.matheus.cupcake.ui.components.TextFieldComponents
+
+@Composable
+fun SignUpScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,
+) {
+    val uiStateError by authViewModel.uiStateError.collectAsStateWithLifecycle()
+    val successCreateAccount by authViewModel.successCreateAccount.collectAsStateWithLifecycle()
+
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+            .padding(24.dp),
+        color = Color.White,
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            NormalText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 40.dp),
+                stringResource(id = R.string.sign_up_title)
+            )
+            HeadingText(
+                stringResource(id = R.string.sign_up_description),
+                modifier = Modifier.wrapContentSize()
+            )
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+            TextFieldComponents(
+                labelValue = stringResource(id = R.string.sign_up_your_name),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                leadingIcon = Icons.Filled.Person,
+                onValueChanged = { authViewModel.updateRegisterNameValue(it) }
+            )
+            TextFieldComponents(
+                labelValue = stringResource(id = R.string.sign_up_last_name),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                Icons.Filled.Person,
+                onValueChanged = { authViewModel.updateRegisterSurnameValue(it) }
+            )
+            TextFieldComponents(
+                labelValue = stringResource(id = R.string.sign_up_email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                Icons.Filled.Email,
+                onValueChanged = { authViewModel.updateRegisterEmailValue(it) }
+            )
+            PasswordTextField(
+                labelValue = stringResource(id = R.string.sign_up_password),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp)),
+                leadingIcon = Icons.Filled.Password,
+                placeholder = stringResource(id = R.string.sign_up_placeholder_password),
+                onValueChanged = { authViewModel.updateRegisterPasswordValue(it) }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ButtonPrimary(
+                onClick = {
+                    authViewModel.registerAccount()
+                    // TODO: adicionar validações de form
+                    navController.popBackStack()
+                    navController.navigate(Graph.HOME)
+                },
+                value = stringResource(id = R.string.sign_up_finish_sign_up),
+                firstGradientColor = MaterialTheme.colorScheme.primary,
+                secondGradientColor = MaterialTheme.colorScheme.secondary
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreviewOfSignUpScreen() {
+//    SignUpScreen(navController = rememberNavController())
+}

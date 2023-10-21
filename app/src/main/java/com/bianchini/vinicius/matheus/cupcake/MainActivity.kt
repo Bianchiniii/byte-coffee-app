@@ -11,13 +11,17 @@ import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.cupcake.graph.RootNavGraph
 import com.bianchini.vinicius.matheus.cupcake.ui.theme.Background
 import com.bianchini.vinicius.matheus.cupcake.ui.theme.CupcakeTheme
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             CupcakeTheme {
                 navController = rememberNavController()

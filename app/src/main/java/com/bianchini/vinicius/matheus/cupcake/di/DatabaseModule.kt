@@ -22,4 +22,9 @@ object DatabaseModule {
         AppDatabase::class.java,
         name = APP_DATABASE_NAME
     ).build()
+
+    @Provides
+    fun providesProfileDao(
+        appDatabase: AppDatabase
+    ) = appDatabase.profileDao()
 }

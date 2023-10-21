@@ -12,11 +12,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.bianchini.vinicius.matheus.cupcake.feature.cart.CartScreen
-import com.bianchini.vinicius.matheus.cupcake.feature.home.ContentHomeScreen
-import com.bianchini.vinicius.matheus.cupcake.feature.home.domain.Food
-import com.bianchini.vinicius.matheus.cupcake.feature.product.ProductScreen
-import com.bianchini.vinicius.matheus.cupcake.feature.profile.ProfileScreen
+import com.bianchini.vinicius.matheus.cupcake.feature.home.cart.presentation.CartScreen
+import com.bianchini.vinicius.matheus.cupcake.feature.home.aisle.presentation.ContentHomeScreen
+import com.bianchini.vinicius.matheus.cupcake.feature.home.aisle.domain.Food
+import com.bianchini.vinicius.matheus.cupcake.feature.home.product.ProductScreen
+import com.bianchini.vinicius.matheus.cupcake.feature.home.profile.presentation.ProfileScreen
 
 @Composable
 fun HomeNavGraph(

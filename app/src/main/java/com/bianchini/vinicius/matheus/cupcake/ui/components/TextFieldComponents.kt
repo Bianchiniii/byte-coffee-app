@@ -28,7 +28,8 @@ import com.bianchini.vinicius.matheus.cupcake.ui.theme.Primary
 fun TextFieldComponents(
     labelValue: String,
     modifier: Modifier,
-    leadingIcon: ImageVector
+    leadingIcon: ImageVector,
+    onValueChanged: (String) -> Unit
 ) {
     val textValue = remember {
         mutableStateOf("")
@@ -38,7 +39,11 @@ fun TextFieldComponents(
         modifier = modifier,
         label = { Text(text = labelValue) },
         value = textValue.value,
-        onValueChange = { textValue.value = it },
+        onValueChange = {
+            textValue.value = it
+
+            onValueChanged(it)
+        },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = BgColor,
             unfocusedContainerColor = BgColor,
@@ -62,7 +67,8 @@ fun PasswordTextField(
     labelValue: String,
     placeholder: String,
     leadingIcon: ImageVector,
-    modifier: Modifier
+    modifier: Modifier,
+    onValueChanged: (String) -> Unit
 ) {
     val passwordValue = remember {
         mutableStateOf("")
@@ -77,7 +83,11 @@ fun PasswordTextField(
         label = { Text(text = labelValue) },
         placeholder = { Text(text = placeholder) },
         value = passwordValue.value,
-        onValueChange = { passwordValue.value = it },
+        onValueChange = {
+            passwordValue.value = it
+
+            onValueChanged(it)
+        },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = BgColor,
             unfocusedContainerColor = BgColor,

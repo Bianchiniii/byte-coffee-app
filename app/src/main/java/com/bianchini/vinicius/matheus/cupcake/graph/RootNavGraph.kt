@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.bianchini.vinicius.matheus.cupcake.feature.home.HomeScreen
+import com.bianchini.vinicius.matheus.cupcake.feature.home.aisle.presentation.HomeScreen
 
 @Composable
 fun RootNavGraph(
