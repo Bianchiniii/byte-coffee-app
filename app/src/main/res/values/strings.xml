@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cupcake</string>
+    <string name="app_name">Byte Coffe</string>
     <string name="app_logo">Ícone app</string>
 
     <!-- SIGN UP-->
@@ -15,6 +15,9 @@
     <string name="sign_up_show_password">Mostrar senha</string>
     <string name="sign_up_hide_password">Esconder senha</string>
     <string name="sign_up_create_account">Criar nova conta</string>
+
+    <!-- Login -->
+    <string name="login_email">Insira seu email</string>
 
     <!-- Product Details -->
     <string name="product_details_select_size">%1$s - Escolha o tamanho</string>

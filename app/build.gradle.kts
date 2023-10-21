@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bianchini.vinicius.matheus.cupcake"
+    namespace = "com.bianchini.vinicius.matheus.bytecoffee"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.bianchini.vinicius.matheus.cupcake"
+        applicationId = "com.bianchini.vinicius.matheus.bytecoffee"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
