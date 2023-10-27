@@ -25,8 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.Food
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Food
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.CardProductDetail
+import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
 import com.bianchini.vinicius.matheus.bytecoffee.util.GlideImageLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +39,7 @@ fun ProductScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White),
+            .background(color = Background),
         topBar = {
             Surface(shadowElevation = 3.dp) {
                 TopAppBar(

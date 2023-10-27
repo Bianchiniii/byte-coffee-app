@@ -4,9 +4,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.data.respons
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.response.ProfileResponse
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers

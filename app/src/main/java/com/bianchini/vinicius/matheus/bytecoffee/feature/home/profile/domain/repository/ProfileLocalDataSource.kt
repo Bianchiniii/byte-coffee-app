@@ -1,6 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository
 
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 
 interface ProfileLocalDataSource {
 
@@ -8,5 +8,7 @@ interface ProfileLocalDataSource {
 
     suspend fun saveProfile(profile: Profile)
 
-    suspend fun deleteProfile(profile: Profile)
+    suspend fun deleteProfile(profileId: String)
+
+    suspend fun updateProfilePhoto(profileId: String, profilePhoto: String)
 }

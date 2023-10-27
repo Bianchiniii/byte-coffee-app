@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Byte Coffe</string>
+    <string name="app_name">Byte Coffee</string>
     <string name="app_logo">Ícone app</string>
 
     <!-- SIGN UP-->
@@ -32,6 +32,11 @@
     <string name="profile_save_changes">Salvar alterações</string>
     <string name="profile_change_photo">Alterar foto</string>
     <string name="profile_photo_image">Imagem de perfil</string>
+    <string name="profile_logout">Sair do app</string>
+
+    <!-- Cart -->
+    <string name="cart_empty_state_title">Seu carrinho está vazio</string>
+    <string name="cart_empty_state_message">Parece que você ainda não adicionou nenhum item no carrinho!</string>
 
     <!-- Utils -->
     <string name="util_load_image">Carregando imagem…</string>

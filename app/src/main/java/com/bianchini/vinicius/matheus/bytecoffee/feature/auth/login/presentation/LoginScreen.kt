@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,17 +26,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.graph.AuthScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
-import com.bianchini.vinicius.matheus.bytecoffee.ui.components.HeadingText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
+import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
 
 @Composable
 fun LoginScreen(
@@ -68,10 +74,17 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HeadingText(
-                value = stringResource(id = R.string.app_name),
+            Text(
+                text = stringResource(id = R.string.app_name),
                 modifier = Modifier.fillMaxWidth(),
-                fontSize = 32
+                style = TextStyle(
+                    color = Primary,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Italic,
+                ),
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(64.dp))
             LoginField(
@@ -101,21 +114,25 @@ fun LoginScreen(
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(R.string.sign_up))
-            }
-            Button(modifier = Modifier
-                .wrapContentSize()
-                .align(Alignment.End),
-                colors = ButtonDefaults.buttonColors(Color.Transparent),
-                onClick = {
-                    navController.navigate(AuthScreenRoutes.SignUp.route)
-                }) {
                 Text(
-                    text = stringResource(R.string.sign_up_create_account),
-                    textAlign = TextAlign.End,
-                    color = Color.Blue,
+                    text = stringResource(R.string.sign_up),
+                    color = Color.White
                 )
             }
+
+            ClickableText(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .align(Alignment.End)
+                    .padding(top = 8.dp),
+                text = AnnotatedString(stringResource(R.string.sign_up_create_account)),
+                style = TextStyle(
+                    color = Primary, fontSize = 16.sp
+                ),
+                onClick = {
+                    navController.navigate(AuthScreenRoutes.SignUp.route)
+                }
+            )
         }
     }
 }

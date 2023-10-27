@@ -1,4 +1,4 @@
-package com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain
+package com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

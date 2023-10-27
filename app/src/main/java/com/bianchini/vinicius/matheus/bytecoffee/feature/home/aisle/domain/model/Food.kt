@@ -1,11 +1,11 @@
-package com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain
+package com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 
 data class Food(
     val id: Int,
     val name: String,
     val description: String,
     val size: List<Size>,
-    val prince: Double,
+    val price: Double,
     val image: String
 ) {
 

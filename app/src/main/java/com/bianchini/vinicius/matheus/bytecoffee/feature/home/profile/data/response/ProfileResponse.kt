@@ -1,6 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.response
 
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 import com.google.gson.annotations.SerializedName
 
 data class ProfileResponse(

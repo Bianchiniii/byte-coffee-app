@@ -56,7 +56,8 @@ fun ButtonPrimary(
             Text(
                 text = value,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
         }
     }
@@ -83,7 +84,8 @@ fun ButtonClicked(
         Text(
             text = value,
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.White
         )
     }
 }

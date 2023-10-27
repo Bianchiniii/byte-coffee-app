@@ -1,6 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository
 
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {

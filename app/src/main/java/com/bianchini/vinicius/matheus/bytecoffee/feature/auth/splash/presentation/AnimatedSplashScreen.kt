@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -72,8 +72,7 @@ fun Splash(alpha: Float) {
             modifier = Modifier
                 .size(120.dp)
                 .alpha(alpha = alpha),
-            // TODO: adicionar logo do app e configurar cores
-            imageVector = Icons.Default.Email,
+            imageVector = Icons.Filled.Coffee,
             contentDescription = stringResource(id = R.string.app_logo),
             tint = Color.White
         )

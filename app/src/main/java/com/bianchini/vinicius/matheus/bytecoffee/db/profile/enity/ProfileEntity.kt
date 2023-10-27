@@ -9,7 +9,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.db.profile.util.DbProfileConsta
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.util.DbProfileConstants.COLUMN_NAME
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.util.DbProfileConstants.COLUMN_PROFILE_IMAGE
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.util.DbProfileConstants.PROFILE_TABLE_NAME
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 
 @Entity(tableName = PROFILE_TABLE_NAME)
 data class ProfileEntity(

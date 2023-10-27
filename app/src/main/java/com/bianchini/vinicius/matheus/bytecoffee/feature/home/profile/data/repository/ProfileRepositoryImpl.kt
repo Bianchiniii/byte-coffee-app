@@ -3,9 +3,9 @@ package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.repo
 import android.util.Log
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.dao.ProfileDao
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.enity.toDomain
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.toEntity
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.ProfileLocalDataSource
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.toEntity
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(
@@ -31,7 +31,23 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteProfile(profile: Profile) {
-        TODO("Not yet implemented")
+    override suspend fun deleteProfile(profileId: String) {
+        runCatching {
+            profileDao.deleteProfile(profileId)
+        }.onFailure {
+            Log.e("ProfileRepositoryImpl", "deleteProfile: ", it)
+        }.onSuccess {
+            Log.d("ProfileRepositoryImpl", "deleteProfile: Success")
+        }
+    }
+
+    override suspend fun updateProfilePhoto(profileId: String, profilePhoto: String) {
+        runCatching {
+            profileDao.updateProfilePhoto(profileId, profilePhoto)
+        }.onFailure {
+            Log.e("ProfileRepositoryImpl", "updateProfilePhoto: ", it)
+        }.onSuccess {
+            Log.d("ProfileRepositoryImpl", "updateProfilePhoto: Success")
+        }
     }
 }

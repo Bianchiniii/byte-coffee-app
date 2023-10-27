@@ -136,7 +136,7 @@ fun LoginField(
     val leadingIcon = @Composable {
         Icon(
             Icons.Default.Person,
-            contentDescription = "Ícone usuário",
+            contentDescription = null,
             tint = Primary
         )
     }
@@ -155,6 +155,14 @@ fun LoginField(
 
             onChange(it)
         },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = BgColor,
+            unfocusedContainerColor = BgColor,
+            disabledContainerColor = BgColor,
+            cursorColor = Primary,
+            focusedBorderColor = Primary,
+            focusedLabelColor = Primary,
+        ),
         leadingIcon = leadingIcon,
         keyboardActions = KeyboardActions(
             onNext = { focusManager.moveFocus(FocusDirection.Down) }

@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.graph.RootNavGraph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
-import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.ByteCoffeTheme
+import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.ByteCoffeeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            ByteCoffeTheme {
+            ByteCoffeeTheme {
                 navController = rememberNavController()
 
                 Surface(

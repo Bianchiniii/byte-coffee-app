@@ -1,6 +1,5 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
@@ -81,6 +80,8 @@ class AuthViewModel @Inject constructor(
             )
             request.ifSuccess {
                 _isLoggingSuccessful.value = true
+
+                profileRepositoryDataSource.saveProfile(it!!.profile)
             }.ifFailure {
                 _isLoggingSuccessful.value = false
             }

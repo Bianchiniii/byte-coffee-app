@@ -1,11 +1,11 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.data.repository
 
+import Resource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.data.response.toProfileToken
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.response.toDomain
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.Profile
 import com.bianchini.vinicius.matheus.bytecoffee.services.ByteCoffeeService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

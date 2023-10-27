@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bianchini.vinicius.matheus.bytecoffee.R
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.Food
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Food
 
 @Composable
 fun CardProductDetail(
@@ -115,7 +115,7 @@ fun DefaultPreviewOfCardProductDetail() {
             id = 3,
             name = "Nescau",
             description = "com leite",
-            prince = 7.50,
+            price = 7.50,
             size = listOf(
                 Food.Size.SMALL, Food.Size.MEDIUM, Food.Size.LARGE
             ),
