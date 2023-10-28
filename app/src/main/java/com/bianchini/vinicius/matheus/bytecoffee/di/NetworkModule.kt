@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.di
 
+import com.bianchini.vinicius.matheus.bytecoffee.BuildConfig
 import com.bianchini.vinicius.matheus.bytecoffee.services.ByteCoffeeService
 import dagger.Module
 import dagger.Provides
@@ -17,37 +18,23 @@ import javax.inject.Singleton
 object NetworkModule {
     private const val TIMEOUT_SECONDS = 15L
 
-    //Mostra as requisições realizadas no logcat em modo degub
     @Provides
     fun providesLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             setLevel(
-//                if (BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     HttpLoggingInterceptor.Level.BODY
-//                } else HttpLoggingInterceptor.Level.NONE
+                } else HttpLoggingInterceptor.Level.NONE
             )
         }
     }
 
-    /*
-        @Provides
-        fun providesAuthorizationInterceptor(): AuthorizationInterceptor {
-            return AuthorizationInterceptor(
-                BuildConfig.PUBLIC_KEY,
-                BuildConfig.PRIVATE_KEY,
-                Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            )
-        }
-    */
-
     @Provides
     fun providesOkHttpCliente(
         loggingInterceptor: HttpLoggingInterceptor,
-        //        authorizationInterceptor: AuthorizationInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            //            .addInterceptor(authorizationInterceptor)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
@@ -69,11 +56,5 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(converterFactory)
             .build()
-    }
-
-    @Provides
-    @Singleton
-    fun providesByteCoffeeService(retrofit: Retrofit): ByteCoffeeService {
-        return retrofit.create(ByteCoffeeService::class.java)
     }
 }
