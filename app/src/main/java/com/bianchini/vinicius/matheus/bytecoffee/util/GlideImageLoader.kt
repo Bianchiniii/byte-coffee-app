@@ -15,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 fun GlideImageLoader(
     modifier: Modifier,
     path: String,
-    contentDescription: String = stringResource(id = R.string.util_load_image),
+    contentDescription: String = stringResource(id = R.string.util_image),
     contentScale: ContentScale = ContentScale.Fit,
     @DrawableRes fallback: Int = R.drawable.ic_img_loading_error,
     @DrawableRes placeHolder: Int = R.drawable.ic_img_placeholder,

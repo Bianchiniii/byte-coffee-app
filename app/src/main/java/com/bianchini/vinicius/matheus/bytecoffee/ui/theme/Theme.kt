@@ -12,13 +12,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryDark,
-    secondary = SecondaryDark,
-    tertiary = TernaryDark,
-    background = BackgroundDark,
-)
-
 private val LightColorScheme = lightColorScheme(
     primary = Primary,
     secondary = Secondary,
@@ -33,14 +26,8 @@ fun ByteCoffeeTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (darkTheme) DarkColorScheme else LightColorScheme
-        }
+    val colorScheme = LightColorScheme
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

@@ -58,7 +58,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentatio
 import com.bianchini.vinicius.matheus.bytecoffee.graph.DetailsScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeNavGraph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
-import com.bianchini.vinicius.matheus.bytecoffee.ui.components.HeadingText
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Secondary
@@ -406,7 +406,7 @@ fun CategoryItem(
             ),
         ) {
             Image(imageVector = category.icon, contentDescription = category.name)
-            HeadingText(
+            NormalText(
                 value = category.name,
                 fontSize = 14,
                 modifier = Modifier.wrapContentSize(),
@@ -465,19 +465,19 @@ fun FoodListItem(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                HeadingText(
+                NormalText(
                     value = food.name,
                     modifier = Modifier.fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                HeadingText(
+                NormalText(
                     value = food.description,
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 12,
                 )
-                HeadingText(
+                NormalText(
                     value = "R$ ${food.price}",
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 14,
@@ -497,14 +497,14 @@ fun ProfileInfoAndNotification(name: String?) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            HeadingText(
+            NormalText(
                 value = "Olá, $name",
                 fontSize = 20,
                 modifier = Modifier.wrapContentSize(),
                 textAlign = TextAlign.Start,
                 fontWeight = FontWeight.Bold
             )
-            HeadingText(
+            NormalText(
                 value = "continue conectado e cafeinado!",
                 fontSize = 16,
                 modifier = Modifier.wrapContentSize(),

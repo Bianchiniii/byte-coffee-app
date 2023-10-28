@@ -4,7 +4,7 @@
 
     <!-- SIGN UP-->
     <string name="sign_up">Entrar</string>
-    <string name="sign_up_title">Criar nova conta</string>
+    <string name="sign_up_personal_info">Informações pessoais</string>
     <string name="sign_up_description">Junte-se a nós e adoce sua vida! Cadastre-se agora e tenha acesso aos cupcakes mais deliciosos da cidade</string>
     <string name="sign_up_your_name">Seu nome</string>
     <string name="sign_up_last_name">Último nome</string>
@@ -15,6 +15,13 @@
     <string name="sign_up_show_password">Mostrar senha</string>
     <string name="sign_up_hide_password">Esconder senha</string>
     <string name="sign_up_create_account">Criar nova conta</string>
+
+    <!-- ADDRESS -->
+    <string name="address_title">Endereço</string>
+    <string name="address_streat">Rua</string>
+    <string name="address_neighborhood">Bairro</string>
+    <string name="address_number">Número</string>
+    <string name="address_city_state">Cidade e Estado</string>
 
     <!-- Login -->
     <string name="login_email">Insira seu email</string>
@@ -37,9 +44,12 @@
     <!-- Cart -->
     <string name="cart_empty_state_title">Seu carrinho está vazio</string>
     <string name="cart_empty_state_message">Parece que você ainda não adicionou nenhum item no carrinho!</string>
+    <string name="cart_items_list">Lista de itens</string>
+    <string name="cart_order_total">Total do pedido</string>
+    <string name="cart_confirm_order">Finalizar pedido</string>
 
     <!-- Utils -->
-    <string name="util_load_image">Carregando imagem…</string>
+    <string name="util_image">Imagem</string>
     <string name="util_navigate_back">Anterior</string>
     <string name="util_notification_icon">Ícone Notificação</string>
     <string name="util_profile_image">Imagem de perfil</string>

@@ -28,7 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +38,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -49,8 +49,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
-import com.bianchini.vinicius.matheus.bytecoffee.ui.components.HeadingText
-import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.TextFieldComponents
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
@@ -132,6 +131,18 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
             bitmap.value = null
         }
 
+        IconButton(
+            onClick = { profileViewModel.logout() },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.icon_logout),
+                contentDescription = stringResource(
+                    id = R.string.profile_logout
+                )
+            )
+        }
+
         // TODO: refatorar para recuperar a imagem do storage
         bitmap.value?.let { btm ->
             Image(
@@ -156,10 +167,10 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
             )
         }
 
-        Button(
+        ButtonPrimary(
             modifier = Modifier
-                .wrapContentSize()
-                .align(Alignment.CenterHorizontally),
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             onClick = {
                 profilePhotoPicker.launch(
                     PickVisualMediaRequest(
@@ -167,12 +178,8 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
                     )
                 )
             },
-        ) {
-            NormalText(
-                modifier = Modifier.wrapContentSize(),
-                value = stringResource(R.string.profile_change_photo)
-            )
-        }
+            value = stringResource(R.string.profile_change_photo)
+        )
     }
 }
 
@@ -226,19 +233,14 @@ fun ChangeProfileInfo() {
                 .fillMaxSize()
                 .padding(bottom = 8.dp)
         ) {
-            Button(
+            ButtonPrimary(
                 onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(48.dp)
                     .align(Alignment.Bottom),
-            ) {
-                HeadingText(
-                    value = stringResource(R.string.profile_save_changes),
-                    modifier = Modifier.wrapContentSize(),
-                    textColor = Color.White
-                )
-            }
+                value = stringResource(R.string.profile_save_changes)
+            )
         }
     }
 }

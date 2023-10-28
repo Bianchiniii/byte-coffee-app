@@ -1,6 +1,7 @@
 package com.bianchini.vinicius.matheus.bytecoffee.ui.components
 
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
@@ -29,7 +30,8 @@ fun TextFieldComponents(
     labelValue: String,
     modifier: Modifier,
     leadingIcon: ImageVector,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    keyboardActions: KeyboardOptions = KeyboardOptions.Default
 ) {
     val textValue = remember {
         mutableStateOf("")
@@ -45,6 +47,7 @@ fun TextFieldComponents(
 
             onValueChanged(it)
         },
+
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = BgColor,
             unfocusedContainerColor = BgColor,
@@ -54,10 +57,12 @@ fun TextFieldComponents(
             focusedLabelColor = Primary,
         ),
         keyboardActions = KeyboardActions.Default,
+        keyboardOptions = keyboardActions,
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,
-                contentDescription = null
+                contentDescription = null,
+                tint = Primary
             )
         }
     )
@@ -102,7 +107,8 @@ fun PasswordTextField(
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,
-                contentDescription = null
+                contentDescription = null,
+                tint = Primary
             )
         },
         trailingIcon = {
@@ -115,7 +121,7 @@ fun PasswordTextField(
             } else stringResource(id = R.string.sign_up_show_password)
 
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                Icon(imageVector = icon, contentDescription = description)
+                Icon(imageVector = icon, contentDescription = description, tint = Primary)
             }
         },
         visualTransformation = if (passwordVisible.value) {

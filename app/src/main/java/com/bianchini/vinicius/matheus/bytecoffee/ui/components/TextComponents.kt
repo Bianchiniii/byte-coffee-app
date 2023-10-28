@@ -11,22 +11,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.TextColor
 
+
 @Composable
 fun NormalText(
-    modifier: Modifier,
-    value: String,
-) {
-    Text(
-        text = value,
-        modifier = modifier,
-        style = MaterialTheme.typography.bodyLarge,
-        textAlign = TextAlign.Center
-    )
-}
-
-
-@Composable
-fun HeadingText(
     value: String,
     fontSize: Int = 18,
     modifier: Modifier,

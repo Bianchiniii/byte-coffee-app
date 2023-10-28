@@ -40,6 +40,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.graph.AuthScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
@@ -103,23 +104,16 @@ fun LoginScreen(
                 onValueChanged = { passwordValue = it }
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
+            ButtonPrimary(
                 onClick = {
                     authViewModel.login(
                         email = emailValue,
                         password = passwordValue
                     )
                 },
-                enabled = true,
-                shape = RoundedCornerShape(5.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.sign_up),
-                    color = Color.White
-                )
-            }
-
+                modifier = Modifier.fillMaxWidth(),
+                value = stringResource(id = R.string.sign_up)
+            )
             ClickableText(
                 modifier = Modifier
                     .wrapContentSize()
