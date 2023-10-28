@@ -18,7 +18,7 @@
 
     <!-- ADDRESS -->
     <string name="address_title">Endereço</string>
-    <string name="address_streat">Rua</string>
+    <string name="address_street">Rua</string>
     <string name="address_neighborhood">Bairro</string>
     <string name="address_number">Número</string>
     <string name="address_city_state">Cidade e Estado</string>

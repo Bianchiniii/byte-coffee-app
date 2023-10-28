@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddLocation
@@ -136,7 +135,7 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
             textAlign = TextAlign.Start,
         )
         TextFieldComponents(
-            labelValue = stringResource(id = R.string.address_streat),
+            labelValue = stringResource(id = R.string.address_street),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
