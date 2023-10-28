@@ -79,9 +79,9 @@ class AuthViewModel @Inject constructor(
                 )
             )
             request.ifSuccess {
-                _isLoggingSuccessful.value = true
-
                 profileRepositoryDataSource.saveProfile(it!!.profile)
+
+                _isLoggingSuccessful.value = true
             }.ifFailure {
                 _isLoggingSuccessful.value = false
             }

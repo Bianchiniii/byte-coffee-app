@@ -21,7 +21,7 @@ object DatabaseModule {
         context,
         AppDatabase::class.java,
         name = APP_DATABASE_NAME
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 
     @Provides
     fun providesProfileDao(

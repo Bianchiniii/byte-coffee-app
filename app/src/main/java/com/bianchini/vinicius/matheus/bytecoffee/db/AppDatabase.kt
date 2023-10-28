@@ -1,6 +1,5 @@
 package com.bianchini.vinicius.matheus.bytecoffee.db
 
-import android.location.Address
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.bianchini.vinicius.matheus.bytecoffee.db.address.dao.AddressDao
@@ -10,7 +9,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.db.profile.enity.ProfileEntity
 
 @Database(
     entities = [ProfileEntity::class, AddressEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
