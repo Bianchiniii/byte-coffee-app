@@ -16,6 +16,6 @@ interface AddressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAddress(address: AddressEntity)
 
-    @Query("DELETE FROM $ADDRESS_TABLE_NAME WHERE id = :addressId")
-    suspend fun deleteAddress(addressId: String)
+    @Query("DELETE FROM $ADDRESS_TABLE_NAME")
+    suspend fun deleteAllAddress()
 }

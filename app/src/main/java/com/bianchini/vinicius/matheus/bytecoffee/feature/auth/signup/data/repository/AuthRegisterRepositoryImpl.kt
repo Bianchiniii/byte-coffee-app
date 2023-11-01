@@ -6,14 +6,18 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.response.toDomain
-import com.bianchini.vinicius.matheus.bytecoffee.services.ByteCoffeeService
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.services.AuthService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthRegisterRepositoryImpl @Inject constructor(
-    private val service: ByteCoffeeService
+    private val service: AuthService,
+    private val profileRepositoryDataSource: ProfileLocalDataSource,
+    private val profileLocalAddressDataSource: ProfileLocalAddressDataSource,
 ) : AuthRegisterRepository {
 
     override suspend fun register(newAccount: NewAccount) = withContext(Dispatchers.IO) {
@@ -22,7 +26,13 @@ class AuthRegisterRepositoryImpl @Inject constructor(
         }.await()
 
         if (request.isSuccessful) {
-            Resource.Result.Success(request.body().toDomain())
+            val profileInfo = request.body()?.profileInfo?.toDomain()!!
+            val profileAddress = request.body()?.address?.toDomain()!!
+
+            profileRepositoryDataSource.saveProfile(profileInfo)
+            profileLocalAddressDataSource.saveAddress(profileAddress)
+
+            Resource.Result.Success(true)
         } else {
             Resource.Result.Failure(Throwable("Failed to create new account!"))
         }

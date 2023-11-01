@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
-interface ByteCoffeeService {
+interface AuthService {
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("auth/login")
@@ -23,8 +23,4 @@ interface ByteCoffeeService {
     fun register(
         @Body newAccount: NewAccount
     ): Call<ProfileResponse>
-
-    @Headers("Content-Type: application/json;charset=UTF-8")
-    @GET("products")
-    suspend fun getProducts()
 }

@@ -25,9 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,6 +45,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.TextFieldComponents
@@ -81,6 +80,12 @@ fun SignUpScreen(
             SetupNewAccountInfo(authViewModel)
             Divider(color = Color.Transparent, thickness = 1.dp, modifier = Modifier.padding(8.dp))
             SetupAddressInfo(authViewModel)
+            Spacer(modifier = Modifier.weight(1f))
+            ButtonPrimary(
+                onClick = { authViewModel.registerAccount() },
+                modifier = Modifier.fillMaxWidth(),
+                value = stringResource(id = R.string.sign_up_finish_sign_up),
+            )
         }
     }
 }
@@ -108,22 +113,6 @@ fun SetupTopInfo() {
 
 @Composable
 fun SetupAddressInfo(authViewModel: AuthViewModel) {
-    var registerAddressStreet by remember {
-        mutableStateOf("")
-    }
-
-    var registerAddressNeighborhood by remember {
-        mutableStateOf("")
-    }
-
-    var registerAddressNumber by remember {
-        mutableStateOf("")
-    }
-
-    var registerAddressCityState by remember {
-        mutableStateOf("")
-    }
-
     Column(Modifier.fillMaxWidth()) {
         NormalText(
             modifier = Modifier
@@ -140,7 +129,11 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.AddLocation,
-            onValueChanged = { registerAddressStreet = it }
+            onValueChanged = { authViewModel.updateProfileAddressStreet(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
         TextFieldComponents(
             labelValue = stringResource(id = R.string.address_neighborhood),
@@ -148,7 +141,11 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Home,
-            onValueChanged = { registerAddressNeighborhood = it }
+            onValueChanged = { authViewModel.updateProfileAddressNeighborhood(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
         TextFieldComponents(
             labelValue = stringResource(id = R.string.address_number),
@@ -156,8 +153,11 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Numbers,
-            onValueChanged = { registerAddressNumber = it },
-            keyboardActions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            onValueChanged = { authViewModel.updateProfileAddressNumber(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
         )
         TextFieldComponents(
             labelValue = stringResource(id = R.string.address_city_state),
@@ -165,39 +165,17 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.LocationCity,
-            onValueChanged = { registerAddressCityState = it }
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        ButtonPrimary(
-            onClick = {
-                /*authViewModel.registerAccount(
-                    email = registerEmailValue,
-                    name = registerNameValue,
-                    surname = registerSurnameValue,
-                    password = registerPasswordValue
-                )*/
-            },
-            modifier = Modifier.fillMaxWidth(),
-            value = stringResource(id = R.string.sign_up_finish_sign_up),
+            onValueChanged = { authViewModel.updateProfileAddressCityAndState(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            )
         )
     }
 }
 
 @Composable
 fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
-    var registerNameValue by remember {
-        mutableStateOf("")
-    }
-    var registerSurnameValue by remember {
-        mutableStateOf("")
-    }
-    var registerEmailValue by remember {
-        mutableStateOf("")
-    }
-    var registerPasswordValue by remember {
-        mutableStateOf("")
-    }
-
     Column(Modifier.wrapContentHeight()) {
         NormalText(
             modifier = Modifier
@@ -214,7 +192,11 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Person,
-            onValueChanged = { registerNameValue = it }
+            onValueChanged = { authViewModel.updateProfileInfoName(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
         TextFieldComponents(
             labelValue = stringResource(id = R.string.sign_up_last_name),
@@ -222,15 +204,17 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             Icons.Filled.Person,
-            onValueChanged = { registerSurnameValue = it }
+            onValueChanged = { authViewModel.updateProfileInfoSurname(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
-        TextFieldComponents(
+        LoginField(
+            onChange = { authViewModel.updateProfileInfoEmail(it) },
+            modifier = Modifier.fillMaxWidth(),
             labelValue = stringResource(id = R.string.sign_up_email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp)),
-            Icons.Filled.Email,
-            onValueChanged = { registerEmailValue = it }
+            placeholder = stringResource(id = R.string.login_email),
         )
         PasswordTextField(
             labelValue = stringResource(id = R.string.sign_up_password),
@@ -239,7 +223,10 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Password,
             placeholder = stringResource(id = R.string.sign_up_placeholder_password),
-            onValueChanged = { registerPasswordValue = it }
+            onValueChanged = { authViewModel.updateProfileInfoPassword(it) },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            )
         )
     }
 }

@@ -1,7 +1,8 @@
 package com.bianchini.vinicius.matheus.bytecoffee.di
 
 import com.bianchini.vinicius.matheus.bytecoffee.BuildConfig
-import com.bianchini.vinicius.matheus.bytecoffee.services.ByteCoffeeService
+import com.bianchini.vinicius.matheus.bytecoffee.di.interceptor.TokenInterceptor
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.TokenLocalDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,13 +32,22 @@ object NetworkModule {
     }
 
     @Provides
-    fun providesOkHttpCliente(
+    fun providesTokenInterceptor(
+        tokenLocalDataSource: TokenLocalDataSource
+    ): TokenInterceptor {
+        return TokenInterceptor(tokenLocalDataSource)
+    }
+
+    @Provides
+    fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
+        tokenInterceptor: TokenInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .addInterceptor(tokenInterceptor)
             .build()
     }
 

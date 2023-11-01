@@ -1,4 +1,4 @@
-package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository
+package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile
 
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 

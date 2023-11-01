@@ -27,4 +27,14 @@ object DatabaseModule {
     fun providesProfileDao(
         appDatabase: AppDatabase
     ) = appDatabase.profileDao()
+
+    @Provides
+    fun providesAddressDao(
+        appDatabase: AppDatabase
+    ) = appDatabase.addressDao()
+
+    @Provides
+    fun providesTokenDao(
+        appDatabase: AppDatabase
+    ) = appDatabase.tokenDao()
 }

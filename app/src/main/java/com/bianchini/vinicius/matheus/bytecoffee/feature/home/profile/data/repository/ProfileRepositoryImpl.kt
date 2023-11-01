@@ -5,7 +5,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.db.profile.dao.ProfileDao
 import com.bianchini.vinicius.matheus.bytecoffee.db.profile.enity.toDomain
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.toEntity
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.ProfileLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import javax.inject.Inject
 
 class ProfileRepositoryImpl @Inject constructor(

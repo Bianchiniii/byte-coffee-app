@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.ProfileLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import extension.getOrNull
 import extension.ifFailure
 import extension.ifSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +35,25 @@ class AuthViewModel @Inject constructor(
     private val _isLoggedProfile = MutableStateFlow(false)
     val isLoggedProfile = _isLoggedProfile.asStateFlow()
 
+    private val _profileInfo = MutableStateFlow(
+        NewAccount.ProfileInfo(
+            name = "",
+            surname = "",
+            email = "",
+            password = "",
+            role = DEFAULT_ROLE
+        )
+    )
+
+    private val _profileAddress = MutableStateFlow(
+        NewAccount.Address(
+            street = "",
+            number = "",
+            neighborhood = "",
+            cityAndState = ""
+        )
+    )
+
     init {
         viewModelScope.launch {
             val request = profileRepositoryDataSource.getProfile()
@@ -40,30 +62,66 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun registerAccount(
-        email: String,
-        name: String,
-        surname: String,
-        password: String
-    ) {
+    fun registerAccount() {
         viewModelScope.launch {
-            val request = authRegisterRepository.register(
-                NewAccount(
-                    name = email,
-                    surname = name,
-                    email = surname,
-                    password = password,
-                    role = DEFAULT_ROLE
-                )
+            val newAccount = NewAccount(
+                profileInfo = _profileInfo.value,
+                address = _profileAddress.value
             )
 
-            request.ifSuccess {
-                profileRepositoryDataSource.saveProfile(it)
+            val request = authRegisterRepository.register(newAccount)
 
-                _successCreateAccount.value = true
-            }.ifFailure {
-                _uiStateError.value = true
-            }
+            _successCreateAccount.value = request.getOrNull() ?: false
+        }
+    }
+
+    fun updateProfileInfoName(name: String) {
+        _profileInfo.update {
+            it.copy(
+                name = name
+            )
+        }
+    }
+
+    fun updateProfileInfoSurname(surname: String) {
+        _profileInfo.update {
+            it.copy(surname = surname)
+        }
+    }
+
+    fun updateProfileInfoEmail(email: String) {
+        _profileInfo.update {
+            it.copy(email = email)
+        }
+    }
+
+    fun updateProfileInfoPassword(password: String) {
+        _profileInfo.update {
+            it.copy(password = password)
+        }
+    }
+
+    fun updateProfileAddressStreet(street: String) {
+        _profileAddress.update {
+            it.copy(street = street)
+        }
+    }
+
+    fun updateProfileAddressNumber(number: String) {
+        _profileAddress.update {
+            it.copy(number = number)
+        }
+    }
+
+    fun updateProfileAddressNeighborhood(neighborhood: String) {
+        _profileAddress.update {
+            it.copy(neighborhood = neighborhood)
+        }
+    }
+
+    fun updateProfileAddressCityAndState(cityAndState: String) {
+        _profileAddress.update {
+            it.copy(cityAndState = cityAndState)
         }
     }
 

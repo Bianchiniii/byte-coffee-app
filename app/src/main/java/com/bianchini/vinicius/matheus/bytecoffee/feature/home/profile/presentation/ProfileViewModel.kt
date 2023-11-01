@@ -4,7 +4,8 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.ProfileLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileLocalDataSource: ProfileLocalDataSource
+    private val profileLocalDataSource: ProfileLocalDataSource,
+//    private val profileAddressDataSource: ProfileLocalAddressDataSource
 ) : ViewModel() {
 
     private var _userProfile: Profile? = null
@@ -35,7 +37,8 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            val request = profileLocalDataSource.deleteProfile(_userProfile?.id ?: "")
+            profileLocalDataSource.deleteProfile(_userProfile?.id ?: "")
+//            profileAddressDataSource.deleteAllAddress()
 
             _shouldRedirectToAuth.value = true
         }

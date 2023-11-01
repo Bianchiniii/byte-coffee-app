@@ -8,7 +8,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.mod
 
 interface AuthRegisterRepository {
 
-    suspend fun register(newAccount: NewAccount): Resource.Result<Profile, Throwable>
+    suspend fun register(newAccount: NewAccount): Resource.Result<Boolean, Throwable>
 
     suspend fun login(loginRequest: LoginRequest): Resource.Result<ProfileToken?, Throwable>
 }

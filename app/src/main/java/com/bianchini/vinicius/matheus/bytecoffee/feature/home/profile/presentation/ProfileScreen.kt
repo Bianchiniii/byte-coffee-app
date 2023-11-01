@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
@@ -43,6 +44,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -50,6 +53,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.TextFieldComponents
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
@@ -194,7 +198,11 @@ fun ChangeProfileInfo() {
             leadingIcon = Icons.Filled.Person,
             onValueChanged = {
 
-            }
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
         TextFieldComponents(
             labelValue = stringResource(id = R.string.sign_up_last_name),
@@ -204,17 +212,17 @@ fun ChangeProfileInfo() {
             Icons.Filled.Person,
             onValueChanged = {
 
-            }
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
         )
-        TextFieldComponents(
-            labelValue = stringResource(id = R.string.sign_up_email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp)),
-            Icons.Filled.Email,
-            onValueChanged = {
-
-            }
+        LoginField(
+            onChange = { },
+            modifier = Modifier.fillMaxWidth(),
+            labelValue = "Email",
+            placeholder = stringResource(id = R.string.login_email),
         )
         PasswordTextField(
             labelValue = stringResource(id = R.string.profile_change_password),
@@ -225,7 +233,11 @@ fun ChangeProfileInfo() {
             placeholder = stringResource(id = R.string.sign_up_placeholder_password),
             onValueChanged = {
 
-            }
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            )
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(

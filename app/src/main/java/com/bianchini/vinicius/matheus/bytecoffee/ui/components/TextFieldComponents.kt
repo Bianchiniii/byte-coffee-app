@@ -16,9 +16,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.ImeAction.Companion
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.bianchini.vinicius.matheus.bytecoffee.R
@@ -31,7 +35,8 @@ fun TextFieldComponents(
     modifier: Modifier,
     leadingIcon: ImageVector,
     onValueChanged: (String) -> Unit,
-    keyboardActions: KeyboardOptions = KeyboardOptions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     val textValue = remember {
         mutableStateOf("")
@@ -56,8 +61,8 @@ fun TextFieldComponents(
             focusedBorderColor = Primary,
             focusedLabelColor = Primary,
         ),
-        keyboardActions = KeyboardActions.Default,
-        keyboardOptions = keyboardActions,
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions,
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,
@@ -74,7 +79,9 @@ fun PasswordTextField(
     placeholder: String,
     leadingIcon: ImageVector,
     modifier: Modifier,
-    onValueChanged: (String) -> Unit
+    onValueChanged: (String) -> Unit,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
     val passwordValue = remember {
         mutableStateOf("")
@@ -103,7 +110,8 @@ fun PasswordTextField(
             focusedBorderColor = Primary,
             focusedLabelColor = Primary,
         ),
-        keyboardActions = KeyboardActions.Default,
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions,
         leadingIcon = {
             Icon(
                 imageVector = leadingIcon,
@@ -137,8 +145,17 @@ fun LoginField(
     modifier: Modifier = Modifier,
     labelValue: String,
     placeholder: String,
+    focusManager: FocusManager = LocalFocusManager.current,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Email,
+        imeAction = ImeAction.Next
+    ),
+    keyboardActions: KeyboardActions = KeyboardActions(onNext = {
+        focusManager.moveFocus(
+            FocusDirection.Down
+        )
+    })
 ) {
-    val focusManager = LocalFocusManager.current
     val leadingIcon = @Composable {
         Icon(
             Icons.Default.Person,
@@ -170,9 +187,8 @@ fun LoginField(
             focusedLabelColor = Primary,
         ),
         leadingIcon = leadingIcon,
-        keyboardActions = KeyboardActions(
-            onNext = { focusManager.moveFocus(FocusDirection.Down) }
-        ),
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions,
         singleLine = true,
         visualTransformation = VisualTransformation.None
     )
