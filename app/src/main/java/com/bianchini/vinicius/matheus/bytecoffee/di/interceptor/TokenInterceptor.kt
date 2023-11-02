@@ -13,6 +13,7 @@ class TokenInterceptor @Inject constructor(
         val newRequest: Request = chain.request().newBuilder()
             .addHeader(
                 "Authorization",
+                // TODO: refatorar para usar o token do database
                 "Bearer ${"token"}"
             ).build()
 

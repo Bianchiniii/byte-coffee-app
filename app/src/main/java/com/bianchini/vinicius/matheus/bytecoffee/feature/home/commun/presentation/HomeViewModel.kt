@@ -7,6 +7,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.repository.AisleRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.model.Ticket
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,9 @@ class HomeViewModel @Inject constructor(
 
     private var _products: MutableStateFlow<List<Product>?> = MutableStateFlow(emptyList())
     val products = _products.asStateFlow()
+
+    private val _currentTicket = MutableStateFlow(Ticket())
+    val currentTicket = _currentTicket.asStateFlow()
 
     init {
         getUser()
@@ -56,5 +60,20 @@ class HomeViewModel @Inject constructor(
 
             _categories.value = request.getOrNull()
         }
+    }
+
+    fun findProductById(productId: String): Product? {
+        return _products.value?.find { it.id == productId }
+    }
+
+    fun addProduct(quantity: Int, product: Product) {
+        // TODO: add item no ticket
+        /*_currentTicket.update {
+            it.products.add(product)
+        }*/
+    }
+
+    fun confirmOrder() {
+        TODO("Not yet implemented")
     }
 }

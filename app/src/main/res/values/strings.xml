@@ -30,6 +30,9 @@
     <string name="product_details_select_size">%1$s - Escolha o tamanho</string>
     <string name="product_details_about">Sobre</string>
     <string name="product_details_add_item">Adicionar no carrinho</string>
+    <string name="product_quantity">Quantidade</string>
+    <string name="product_add_item">Adicionar</string>
+    <string name="product_remove_item">Remover</string>
 
     <!-- Home Screen -->
     <string name="home_screen_categories">Categorias</string>
@@ -44,9 +47,10 @@
     <!-- Cart -->
     <string name="cart_empty_state_title">Seu carrinho está vazio</string>
     <string name="cart_empty_state_message">Parece que você ainda não adicionou nenhum item no carrinho!</string>
+    <string name="cart_has_items_on_ticket">Você têm itens no carrinho</string>
     <string name="cart_items_list">Lista de itens</string>
     <string name="cart_order_total">Total do pedido</string>
-    <string name="cart_confirm_order">Finalizar pedido</string>
+    <string name="cart_confirm_order">Finalizar pedido</string>"
 
     <!-- Utils -->
     <string name="util_image">Imagem</string>
