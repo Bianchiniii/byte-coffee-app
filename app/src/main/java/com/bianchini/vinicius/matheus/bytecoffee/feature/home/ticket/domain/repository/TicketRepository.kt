@@ -18,5 +18,7 @@ interface TicketRepository {
         quantity: Int
     )
 
+    fun getTicketTotal(): Double
+
     fun finishOrder()
 }

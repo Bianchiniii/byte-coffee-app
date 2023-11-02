@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.presentation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,13 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,9 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
@@ -65,12 +63,14 @@ fun CartScreen(
                 bottom = paddingValues.calculateBottomPadding()
             ),
     ) {
-        if (isCartEmpty) {
+        AnimatedVisibility(visible = isCartEmpty) {
             EmptyCart()
-        } else {
+        }
+        AnimatedVisibility(visible = !isCartEmpty) {
             CartList(
                 products = products,
-                onConfirmOrder = { homeViewModel.finishOrder() }
+                onConfirmOrder = { homeViewModel.finishOrder() },
+                totalOrder = homeViewModel.getTicketTotal()
             )
         }
     }
@@ -79,6 +79,7 @@ fun CartScreen(
 @Composable
 fun CartList(
     products: List<TicketItem>,
+    totalOrder: Double,
     onConfirmOrder: () -> Unit
 ) {
     Column(
@@ -86,7 +87,7 @@ fun CartList(
     ) {
         TopOrderDetails()
         ListCartItems(products)
-        OrderResume()
+        OrderResume(totalOrder)
         ConfirmOrder(onConfirmOrder = { onConfirmOrder.invoke() })
     }
 }
@@ -107,12 +108,12 @@ fun TopOrderDetails() {
     ) {
         NormalText(
             value = stringResource(id = R.string.cart_items_list),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.wrapContentWidth(),
             textAlign = TextAlign.Start
         )
         NormalText(
             value = stringResource(id = R.string.cart_add_more_items),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.wrapContentWidth(),
             textAlign = TextAlign.Start,
             textColor = Color.Red
         )
@@ -129,9 +130,7 @@ fun ListCartItems(
             .padding(top = 12.dp)
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxHeight(0.85f)
-                .padding(vertical = 4.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         ) {
             items(items = ticketItem) { item ->
                 ItemCart(item.product)
@@ -141,7 +140,11 @@ fun ListCartItems(
                     onInciseItem = { },
                     onRemoveItem = { }
                 )
-                Divider(color = Color.Black, thickness = 1.dp)
+                Divider(
+                    color = Color.Black,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
             }
         }
     }
@@ -162,9 +165,7 @@ fun ItemCart(item: Product) {
             path = item.image,
         )
         Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp)
         ) {
             NormalText(
                 value = item.name,
@@ -229,7 +230,7 @@ fun SetupItemQuantity(
             }
 
         }
-        NormalText(value = "R$: ${totalTicket}", modifier = Modifier.fillMaxHeight())
+        NormalText(value = "R$: $totalTicket", modifier = Modifier.fillMaxHeight())
     }
 }
 
@@ -238,8 +239,7 @@ fun ConfirmOrder(
     onConfirmOrder: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -251,9 +251,10 @@ fun ConfirmOrder(
     }
 }
 
-@Preview
 @Composable
-fun OrderResume() {
+fun OrderResume(
+    totalOrder: Double
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -266,7 +267,7 @@ fun OrderResume() {
             fontSize = 18
         )
         NormalText(
-            value = "R$: 40,00",
+            value = "R$: $totalOrder",
             fontWeight = FontWeight.Bold,
             modifier = Modifier.wrapContentSize(),
             fontSize = 18

@@ -29,6 +29,20 @@ class TicketRepositoryImpl @Inject constructor(
         }.run {
             currentTicket.products.add(ticketItem)
         }
+
+        refreshTotal()
+    }
+
+
+    private fun refreshTotal() {
+        val products = currentTicket.products
+        var total = 0.0
+
+        products.forEach {
+            total += it.product.price * it.quantity
+        }
+
+        currentTicket.total = total
     }
 
     override fun getTicketItem(): List<TicketItem> = currentTicket.products
@@ -42,6 +56,10 @@ class TicketRepositoryImpl @Inject constructor(
         }?.let {
             it.quantity = quantity
         }
+    }
+
+    override fun getTicketTotal(): Double {
+        return currentTicket.total
     }
 
     override fun finishOrder() {

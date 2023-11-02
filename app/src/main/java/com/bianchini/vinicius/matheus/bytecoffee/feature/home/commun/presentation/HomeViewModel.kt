@@ -80,7 +80,12 @@ class HomeViewModel @Inject constructor(
         )
     }
 
+
     fun getTicketItems(): List<TicketItem> = ticketRepository.getTicketItem()
+
+    fun getTicketTotal():Double {
+        return ticketRepository.getTicketTotal()
+    }
 
     fun finishOrder() {
         ticketRepository.finishOrder()

@@ -4,7 +4,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 
 data class Ticket(
     val products: MutableList<TicketItem>,
-    val total: Double,
+    var total: Double,
     val isLiveOrder: Boolean = true,
 )
 
