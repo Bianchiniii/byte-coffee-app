@@ -19,25 +19,32 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
+import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
@@ -46,9 +53,10 @@ import com.bianchini.vinicius.matheus.bytecoffee.util.GlideImageLoader
 @Composable
 fun CartScreen(
     paddingValues: PaddingValues,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    navController: NavController,
 ) {
-    val products = homeViewModel.getTicketItems()
+    val products = homeViewModel.ticketState.collectAsStateWithLifecycle().value.products
 
     val isCartEmpty = products.isEmpty()
 
@@ -70,7 +78,10 @@ fun CartScreen(
             CartList(
                 products = products,
                 onConfirmOrder = { homeViewModel.finishOrder() },
-                totalOrder = homeViewModel.getTicketTotal()
+                totalOrder = homeViewModel.getTicketTotal(),
+                onAddMoreItems = { navController.navigate(HomeScreenRoutes.Home.route) },
+                onInciseItem = { id, qnt -> homeViewModel.updateTicketItem(id, qnt) },
+                onRemoveItem = { id, qnt -> homeViewModel.updateTicketItem(id, qnt) },
             )
         }
     }
@@ -80,20 +91,29 @@ fun CartScreen(
 fun CartList(
     products: List<TicketItem>,
     totalOrder: Double,
-    onConfirmOrder: () -> Unit
+    onConfirmOrder: () -> Unit,
+    onAddMoreItems: () -> Unit,
+    onInciseItem: (String, Int) -> Unit,
+    onRemoveItem: (String, Int) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        TopOrderDetails()
-        ListCartItems(products)
+        TopOrderDetails(onAddMoreItems = { onAddMoreItems.invoke() })
+        ListCartItems(
+            ticketItem = products,
+            onInciseItem = { id, qnt -> onInciseItem.invoke(id, qnt) },
+            onRemoveItem = { id, qnt -> onRemoveItem.invoke(id, qnt) }
+        )
         OrderResume(totalOrder)
         ConfirmOrder(onConfirmOrder = { onConfirmOrder.invoke() })
     }
 }
 
 @Composable
-fun TopOrderDetails() {
+fun TopOrderDetails(
+    onAddMoreItems: () -> Unit
+) {
     NormalText(
         value = stringResource(id = R.string.cart_has_items_on_ticket),
         fontWeight = FontWeight.Bold,
@@ -111,18 +131,23 @@ fun TopOrderDetails() {
             modifier = Modifier.wrapContentWidth(),
             textAlign = TextAlign.Start
         )
-        NormalText(
-            value = stringResource(id = R.string.cart_add_more_items),
+        ClickableText(
+            text = AnnotatedString(stringResource(id = R.string.cart_add_more_items)),
+            onClick = { onAddMoreItems.invoke() },
             modifier = Modifier.wrapContentWidth(),
-            textAlign = TextAlign.Start,
-            textColor = Color.Red
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 18.sp,
+                color = Color.Red
+            ),
         )
     }
 }
 
 @Composable
 fun ListCartItems(
-    ticketItem: List<TicketItem>
+    ticketItem: List<TicketItem>,
+    onInciseItem: (String, Int) -> Unit,
+    onRemoveItem: (String, Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -137,8 +162,18 @@ fun ListCartItems(
                 SetupItemQuantity(
                     item.quantity,
                     item.product.price,
-                    onInciseItem = { },
-                    onRemoveItem = { }
+                    onInciseItem = {
+                        onInciseItem.invoke(
+                            item.product.id,
+                            item.quantity + 1
+                        )
+                    },
+                    onRemoveItem = {
+                        onRemoveItem.invoke(
+                            item.product.id,
+                            item.quantity - 1
+                        )
+                    }
                 )
                 Divider(
                     color = Color.Black,

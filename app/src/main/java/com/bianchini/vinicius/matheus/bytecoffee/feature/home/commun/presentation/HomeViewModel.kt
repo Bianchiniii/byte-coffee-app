@@ -32,6 +32,8 @@ class HomeViewModel @Inject constructor(
     private var _products: MutableStateFlow<List<Product>?> = MutableStateFlow(emptyList())
     val products = _products.asStateFlow()
 
+    val ticketState = ticketRepository.currentTicket
+
     init {
         getUser()
 
@@ -80,10 +82,11 @@ class HomeViewModel @Inject constructor(
         )
     }
 
+    fun updateTicketItem(ticketItemId: String, quantity: Int) {
+        ticketRepository.onTicketItemQuantityChanged(ticketItemId, quantity)
+    }
 
-    fun getTicketItems(): List<TicketItem> = ticketRepository.getTicketItem()
-
-    fun getTicketTotal():Double {
+    fun getTicketTotal(): Double {
         return ticketRepository.getTicketTotal()
     }
 

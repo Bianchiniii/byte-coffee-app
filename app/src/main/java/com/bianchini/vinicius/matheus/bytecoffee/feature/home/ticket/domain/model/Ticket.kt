@@ -4,13 +4,23 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 
 data class Ticket(
     val products: MutableList<TicketItem>,
-    var total: Double,
-    val isLiveOrder: Boolean = true,
-)
+    val isActive: Boolean,
+) {
 
-// TODO: verificar questão da quantidade
+    val total = {
+        val products = products
+        var total = 0.0
+
+        products.forEach {
+            total += it.product.price * it.quantity
+        }
+
+        total
+    }
+}
+
 data class TicketItem(
     val product: Product,
-    var quantity: Int = 0,
+    val quantity: Int,
 )
 

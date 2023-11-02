@@ -4,67 +4,75 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.mode
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import com.bianchini.vinicius.matheus.bytecoffee.services.AisleService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class TicketRepositoryImpl @Inject constructor(
     private val service: AisleService
 ) : TicketRepository {
 
-    override lateinit var currentTicket: Ticket
-
-    override fun initTicket(): Ticket {
-        currentTicket = Ticket(
+    private var _currentTicket: MutableStateFlow<Ticket> = MutableStateFlow(
+        Ticket(
             products = mutableListOf(),
-            total = 0.0
+            isActive = false
         )
+    )
 
-        return currentTicket
+    override val currentTicket: StateFlow<Ticket> get() = _currentTicket.asStateFlow()
+
+    override val ticket: Ticket get() = currentTicket.value
+
+    override fun initTicket() {
+        _currentTicket.update { it.copy(isActive = true) }
     }
 
-    override fun onAddItem(ticketItem: TicketItem) {
-        currentTicket.products.find {
-            it.product.id == ticketItem.product.id
-        }?.let {
-            it.quantity += ticketItem.quantity
-        }.run {
-            currentTicket.products.add(ticketItem)
+    override fun onAddItem(newTicketItem: TicketItem) {
+        _currentTicket.value.products.find { ticketItem ->
+            ticketItem.product.id == newTicketItem.product.id
+        }.let { product ->
+            product?.copy(quantity = newTicketItem.quantity) ?: ticket.products.add(newTicketItem)
         }
-
-        refreshTotal()
     }
 
 
-    private fun refreshTotal() {
-        val products = currentTicket.products
-        var total = 0.0
+    override fun getTicketItem(): List<TicketItem> = ticket.products
 
-        products.forEach {
-            total += it.product.price * it.quantity
+    override fun removeTicketItem(ticketItemId: String) {
+        _currentTicket.update {
+            it.copy(
+                products = it.products.filter { ticketItem ->
+                    ticketItem.product.id != ticketItemId
+                }.toMutableList()
+            )
         }
-
-        currentTicket.total = total
     }
 
-    override fun getTicketItem(): List<TicketItem> = currentTicket.products
-
-    override fun onTicketItemChanged(
+    override fun onTicketItemQuantityChanged(
         ticketItemId: String,
         quantity: Int
     ) {
-        currentTicket.products.find {
-            it.product.id == ticketItemId
-        }?.let {
-            it.quantity = quantity
+        _currentTicket.update {
+            it.copy(
+                products = it.products.map { ticketItem ->
+                    if (ticketItem.product.id == ticketItemId) {
+                        ticketItem.copy(quantity = quantity)
+                    } else {
+                        ticketItem
+                    }
+                }.toMutableList()
+            )
         }
     }
 
-    override fun getTicketTotal(): Double {
-        return currentTicket.total
-    }
+    override fun getTicketTotal(): Double = ticket.total.invoke()
 
     override fun finishOrder() {
         runCatching {
-            val request = service.finishOrder(currentTicket)
+            val request = service.finishOrder(ticket)
 
             request.execute()
         }.onFailure {

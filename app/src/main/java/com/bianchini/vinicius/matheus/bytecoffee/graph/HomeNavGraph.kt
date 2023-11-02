@@ -44,7 +44,8 @@ fun HomeNavGraph(
         composable(route = HomeScreenRoutes.Cart.route) {
             CartScreen(
                 paddingValues,
-                viewModel
+                viewModel,
+                navController
             )
         }
         composable(route = HomeScreenRoutes.Profile.route) {
