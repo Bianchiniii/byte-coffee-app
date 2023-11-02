@@ -15,15 +15,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.presentation.ContentHomeScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.presentation.CartScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.product.ProductScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileViewModel
-import com.bianchini.vinicius.matheus.bytecoffee.util.JsonNavType
-import com.google.gson.Gson
 
 @Composable
 fun HomeNavGraph(

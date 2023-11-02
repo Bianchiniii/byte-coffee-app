@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.model.TicketItem
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
@@ -49,7 +50,7 @@ fun CartScreen(
     paddingValues: PaddingValues,
     homeViewModel: HomeViewModel
 ) {
-    val products = homeViewModel.currentTicket.collectAsStateWithLifecycle().value.products
+    val products = homeViewModel.getTicketItems()
 
     val isCartEmpty = products.isEmpty()
 
@@ -69,7 +70,7 @@ fun CartScreen(
         } else {
             CartList(
                 products = products,
-                onConfirmOrder = { homeViewModel.confirmOrder() }
+                onConfirmOrder = { homeViewModel.finishOrder() }
             )
         }
     }
@@ -86,9 +87,7 @@ fun CartList(
         TopOrderDetails()
         ListCartItems(products)
         OrderResume()
-        ConfirmOrder(
-            onConfirmOrder = { onConfirmOrder.invoke() }
-        )
+        ConfirmOrder(onConfirmOrder = { onConfirmOrder.invoke() })
     }
 }
 
@@ -100,12 +99,24 @@ fun TopOrderDetails() {
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Start
     )
-    Spacer(modifier = Modifier.height(8.dp))
-    NormalText(
-        value = stringResource(id = R.string.cart_items_list),
+    Spacer(modifier = Modifier.height(12.dp))
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Start
-    )
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        NormalText(
+            value = stringResource(id = R.string.cart_items_list),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start
+        )
+        NormalText(
+            value = stringResource(id = R.string.cart_add_more_items),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+            textColor = Color.Red
+        )
+    }
 }
 
 @Composable
@@ -113,7 +124,9 @@ fun ListCartItems(
     ticketItem: List<TicketItem>
 ) {
     Column(
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(top = 12.dp)
     ) {
         LazyColumn(
             modifier = Modifier
@@ -157,18 +170,13 @@ fun ItemCart(item: Product) {
                 value = item.name,
                 modifier = Modifier.wrapContentSize(),
                 fontWeight = FontWeight.Bold,
-                fontSize = 16
+                fontSize = 14
             )
             NormalText(
                 value = item.description,
                 modifier = Modifier.wrapContentSize(),
-                fontSize = 14
+                fontSize = 12
             )
-            /*NormalText(
-                value = "Tamanho: ${item.size[0]}",
-                modifier = Modifier.wrapContentSize(),
-                fontSize = 14
-            )*/
         }
         NormalText(
             value = "R$ ${item.price}",
@@ -192,10 +200,9 @@ fun SetupItemQuantity(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(modifier = Modifier.fillMaxHeight()) {
-            Button(
+            IconButton(
                 onClick = { onRemoveItem.invoke() },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
             ) {
                 Icon(
                     imageVector = Icons.Filled.Remove,
@@ -210,10 +217,9 @@ fun SetupItemQuantity(
                     .align(Alignment.CenterVertically),
                 fontSize = 16
             )
-            Button(
+            IconButton(
                 onClick = { onInciseItem.invoke() },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,

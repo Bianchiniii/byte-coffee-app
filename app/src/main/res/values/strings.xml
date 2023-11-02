@@ -49,8 +49,9 @@
     <string name="cart_empty_state_message">Parece que você ainda não adicionou nenhum item no carrinho!</string>
     <string name="cart_has_items_on_ticket">Você têm itens no carrinho</string>
     <string name="cart_items_list">Lista de itens</string>
+    <string name="cart_add_more_items">Add itens</string>
     <string name="cart_order_total">Total do pedido</string>
-    <string name="cart_confirm_order">Finalizar pedido</string>"
+    <string name="cart_confirm_order">Finalizar pedido</string>
 
     <!-- Utils -->
     <string name="util_image">Imagem</string>

@@ -6,6 +6,8 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.repos
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.TokenLocalDataSource
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.data.repository.TicketRepositoryImpl
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -29,4 +31,9 @@ abstract class RepositoryModule {
     abstract fun bindsTokenLocalDataSource(
         tokenRepositoryImpl: TokenRepositoryImpl
     ): TokenLocalDataSource
+
+    @Binds
+    abstract fun bindsTicketRepository(
+        ticketRepositoryImpl: TicketRepositoryImpl
+    ): TicketRepository
 }

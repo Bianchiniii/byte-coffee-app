@@ -7,7 +7,8 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.repository.AisleRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.model.Ticket
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val profileLocalDataSource: ProfileLocalDataSource,
-    private val aisleRepository: AisleRepository
+    private val aisleRepository: AisleRepository,
+    private val ticketRepository: TicketRepository
 ) : ViewModel() {
 
     private var _userProfile: MutableStateFlow<Profile?> = MutableStateFlow(null)
@@ -30,13 +32,15 @@ class HomeViewModel @Inject constructor(
     private var _products: MutableStateFlow<List<Product>?> = MutableStateFlow(emptyList())
     val products = _products.asStateFlow()
 
-    private val _currentTicket = MutableStateFlow(Ticket())
-    val currentTicket = _currentTicket.asStateFlow()
-
     init {
         getUser()
-        getCategories()
+
+        // TODO: sera implementado futuramente
+//        getCategories()
+
         getProducts()
+
+        ticketRepository.initTicket()
     }
 
     private fun getUser() {
@@ -54,26 +58,31 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getCategories() {
+    // TODO: sera implementado futuramente
+    /*private fun getCategories() {
         viewModelScope.launch {
             val request = aisleRepository.getAisleCategories()
 
             _categories.value = request.getOrNull()
         }
-    }
+    }*/
 
     fun findProductById(productId: String): Product? {
         return _products.value?.find { it.id == productId }
     }
 
     fun addProduct(quantity: Int, product: Product) {
-        // TODO: add item no ticket
-        /*_currentTicket.update {
-            it.products.add(product)
-        }*/
+        ticketRepository.onAddItem(
+            ticketItem = TicketItem(
+                product = product,
+                quantity = quantity
+            )
+        )
     }
 
-    fun confirmOrder() {
-        TODO("Not yet implemented")
+    fun getTicketItems(): List<TicketItem> = ticketRepository.getTicketItem()
+
+    fun finishOrder() {
+        ticketRepository.finishOrder()
     }
 }
