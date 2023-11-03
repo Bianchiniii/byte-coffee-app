@@ -155,7 +155,9 @@ fun ListCartItems(
             .padding(top = 12.dp)
     ) {
         LazyColumn(
-            modifier = Modifier.padding(vertical = 4.dp)
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .weight(0.85f, false)
         ) {
             items(items = ticketItem) { item ->
                 ItemCart(item.product)
@@ -163,11 +165,13 @@ fun ListCartItems(
                     item.quantity,
                     item.product.price,
                     onInciseItem = {
+                        // TODO: migrar logica para reposiry ou use case
                         onInciseItem.invoke(
                             item.product.id,
                             item.quantity + 1
                         )
                     },
+                    // TODO: migrar logica para reposiry ou use case
                     onRemoveItem = {
                         onRemoveItem.invoke(
                             item.product.id,
@@ -226,7 +230,7 @@ fun ItemCart(item: Product) {
 @Composable
 fun SetupItemQuantity(
     quantity: Int,
-    totalTicket: Double,
+    itemPrice: Double,
     onInciseItem: () -> Unit,
     onRemoveItem: () -> Unit,
 ) {
@@ -265,7 +269,10 @@ fun SetupItemQuantity(
             }
 
         }
-        NormalText(value = "R$: $totalTicket", modifier = Modifier.fillMaxHeight())
+        NormalText(
+            value = "R$: ${itemPrice * quantity}",
+            modifier = Modifier.fillMaxHeight()
+        )
     }
 }
 
