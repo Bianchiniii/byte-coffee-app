@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -244,24 +245,34 @@ fun ProductListItem(
     ) {
         Card(
             elevation = CardDefaults.cardElevation(4.dp),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .requiredHeight(270.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
         ) {
             GlideImageLoader(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(150.dp),
                 path = food.image,
                 contentScale = ContentScale.FillBounds,
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 8.dp)
+                    .padding(
+                        vertical = 8.dp,
+                        horizontal = 8.dp
+                    ),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 NormalText(
                     value = food.name,
                     modifier = Modifier.fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 NormalText(
