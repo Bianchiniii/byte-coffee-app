@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -55,6 +56,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.graph.DetailsScreenRoutes
+import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeNavGraph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
@@ -134,7 +136,10 @@ fun ContentHomeScreen(
             )
             .background(color = Background),
     ) {
-        ProfileInfoAndNotification(profile.value?.name)
+        ProfileInfoAndNotification(
+            profile.value?.name,
+            onNavigateToOrders = { navController.navigate(Graph.ORDERS) }
+        )
         Spacer(modifier = Modifier.height(15.dp))
         AnimatedVisibility(visible = !categories.value.isNullOrEmpty()) {
             // TODO: sera implementado futuramente
@@ -275,7 +280,10 @@ fun ProductListItem(
 }
 
 @Composable
-fun ProfileInfoAndNotification(name: String?) {
+fun ProfileInfoAndNotification(
+    profileName: String?,
+    onNavigateToOrders: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -285,7 +293,7 @@ fun ProfileInfoAndNotification(name: String?) {
     ) {
         Column {
             NormalText(
-                value = "Olá, $name",
+                value = "Olá, ${profileName ?: "visitante"}",
                 fontSize = 20,
                 modifier = Modifier.wrapContentSize(),
                 textAlign = TextAlign.Start,
@@ -298,9 +306,11 @@ fun ProfileInfoAndNotification(name: String?) {
                 textAlign = TextAlign.Start,
             )
         }
-        Icon(
-            Icons.Filled.Notifications,
-            contentDescription = stringResource(R.string.util_notification_icon),
-        )
+        IconButton(onClick = { onNavigateToOrders() }) {
+            Icon(
+                Icons.Filled.Notifications,
+                contentDescription = stringResource(R.string.util_notification_icon),
+            )
+        }
     }
 }

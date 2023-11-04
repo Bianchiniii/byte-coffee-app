@@ -51,18 +51,29 @@ class TicketRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun onTicketItemQuantityChanged(
-        ticketItemId: String,
-        quantity: Int
-    ) {
+    override fun onTicketItemQuantityIncreased(ticketItemId: String) {
         _currentTicket.update {
             it.copy(
                 products = it.products.map { ticketItem ->
                     if (ticketItem.product.id == ticketItemId) {
-                        ticketItem.copy(quantity = quantity)
+                        ticketItem.copy(quantity = ticketItem.quantity + 1)
                     } else {
                         ticketItem
                     }
+                }.toMutableList()
+            )
+        }
+    }
+
+    override fun onTicketItemRemoved(ticketItemId: String) {
+        _currentTicket.update {
+            it.copy(
+                products = it.products.map { ticketItem ->
+                    if (ticketItem.product.id == ticketItemId) {
+                        if (ticketItem.quantity > 1) {
+                            ticketItem.copy(quantity = ticketItem.quantity - 1)
+                        } else ticketItem
+                    } else ticketItem
                 }.toMutableList()
             )
         }

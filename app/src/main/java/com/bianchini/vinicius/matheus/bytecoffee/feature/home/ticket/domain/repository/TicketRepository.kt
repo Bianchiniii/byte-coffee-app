@@ -18,10 +18,9 @@ interface TicketRepository {
 
     fun removeTicketItem(ticketItemId: String)
 
-    fun onTicketItemQuantityChanged(
-        ticketItemId: String,
-        quantity: Int
-    )
+    fun onTicketItemQuantityIncreased(ticketItemId: String)
+
+    fun onTicketItemRemoved(ticketItemId: String)
 
     fun getTicketTotal(): Double
 

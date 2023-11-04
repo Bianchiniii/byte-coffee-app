@@ -82,8 +82,12 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    fun updateTicketItem(ticketItemId: String, quantity: Int) {
-        ticketRepository.onTicketItemQuantityChanged(ticketItemId, quantity)
+    fun increaseTicketItemQuantity(ticketItemId: String) {
+        ticketRepository.onTicketItemQuantityIncreased(ticketItemId)
+    }
+
+    fun removeTicketItem(ticketItemId: String) {
+        ticketRepository.onTicketItemRemoved(ticketItemId)
     }
 
     fun getTicketTotal(): Double {

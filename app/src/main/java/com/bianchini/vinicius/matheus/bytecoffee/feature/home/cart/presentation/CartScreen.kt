@@ -80,8 +80,8 @@ fun CartScreen(
                 onConfirmOrder = { homeViewModel.finishOrder() },
                 totalOrder = homeViewModel.getTicketTotal(),
                 onAddMoreItems = { navController.navigate(HomeScreenRoutes.Home.route) },
-                onInciseItem = { id, qnt -> homeViewModel.updateTicketItem(id, qnt) },
-                onRemoveItem = { id, qnt -> homeViewModel.updateTicketItem(id, qnt) },
+                onInciseItem = { id -> homeViewModel.increaseTicketItemQuantity(id) },
+                onRemoveItem = { id -> homeViewModel.removeTicketItem(id) },
             )
         }
     }
@@ -93,8 +93,8 @@ fun CartList(
     totalOrder: Double,
     onConfirmOrder: () -> Unit,
     onAddMoreItems: () -> Unit,
-    onInciseItem: (String, Int) -> Unit,
-    onRemoveItem: (String, Int) -> Unit,
+    onInciseItem: (String) -> Unit,
+    onRemoveItem: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -102,8 +102,8 @@ fun CartList(
         TopOrderDetails(onAddMoreItems = { onAddMoreItems.invoke() })
         ListCartItems(
             ticketItem = products,
-            onInciseItem = { id, qnt -> onInciseItem.invoke(id, qnt) },
-            onRemoveItem = { id, qnt -> onRemoveItem.invoke(id, qnt) }
+            onInciseItem = { id -> onInciseItem.invoke(id) },
+            onRemoveItem = { id -> onRemoveItem.invoke(id) }
         )
         OrderResume(totalOrder)
         ConfirmOrder(onConfirmOrder = { onConfirmOrder.invoke() })
@@ -146,8 +146,8 @@ fun TopOrderDetails(
 @Composable
 fun ListCartItems(
     ticketItem: List<TicketItem>,
-    onInciseItem: (String, Int) -> Unit,
-    onRemoveItem: (String, Int) -> Unit
+    onInciseItem: (String) -> Unit,
+    onRemoveItem: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -165,18 +165,10 @@ fun ListCartItems(
                     item.quantity,
                     item.product.price,
                     onInciseItem = {
-                        // TODO: migrar logica para reposiry ou use case
-                        onInciseItem.invoke(
-                            item.product.id,
-                            item.quantity + 1
-                        )
+                        onInciseItem.invoke(item.product.id)
                     },
-                    // TODO: migrar logica para reposiry ou use case
                     onRemoveItem = {
-                        onRemoveItem.invoke(
-                            item.product.id,
-                            item.quantity - 1
-                        )
+                        onRemoveItem.invoke(item.product.id)
                     }
                 )
                 Divider(
@@ -333,13 +325,12 @@ fun EmptyCart() {
             fontWeight = FontWeight.Bold,
             fontSize = 16
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         NormalText(
             value = stringResource(id = R.string.cart_empty_state_message),
             modifier = Modifier.wrapContentSize(),
-            fontSize = 14,
+            fontSize = 16,
             fontWeight = FontWeight.Bold,
-            textColor = Color.White
         )
     }
 }

@@ -18,6 +18,7 @@ import androidx.navigation.navigation
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.presentation.ContentHomeScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.presentation.CartScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.presentation.OrdersScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.product.ProductScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileViewModel
@@ -52,8 +53,27 @@ fun HomeNavGraph(
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(paddingValues, profileViewModel)
         }
+        ordersNavGraph(navController = navController, viewModel)
         detailsNavGraph(navController = navController, viewModel)
     }
+}
+
+fun NavGraphBuilder.ordersNavGraph(navController: NavHostController, viewModel: HomeViewModel) {
+    navigation(
+        route = Graph.ORDERS,
+        startDestination = OrdersScreenRoutes.Orders.route
+    ) {
+        composable(route = OrdersScreenRoutes.Orders.route) {
+            OrdersScreen(
+                navController = navController,
+                viewModel = viewModel
+            )
+        }
+    }
+}
+
+sealed class OrdersScreenRoutes(val route: String) {
+    object Orders : OrdersScreenRoutes(route = "orders")
 }
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController, viewModel: HomeViewModel) {
@@ -87,7 +107,6 @@ sealed class HomeScreenRoutes(
     val route: String,
     val title: String,
     val icon: ImageVector,
-    val needArgs: Boolean = false
 ) {
     object Home : HomeScreenRoutes(
         route = "home",
@@ -103,7 +122,6 @@ sealed class HomeScreenRoutes(
 
     object Profile : HomeScreenRoutes(
         route = "profile/{padding}",
-        needArgs = true,
         title = "Perfil",
         icon = Icons.Default.Person
     )
