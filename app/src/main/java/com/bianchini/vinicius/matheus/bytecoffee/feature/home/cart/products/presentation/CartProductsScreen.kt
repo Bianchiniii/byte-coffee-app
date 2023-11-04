@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -81,9 +81,9 @@ fun CartScreen(
             .fillMaxSize()
             .background(color = Background)
             .padding(
-                start = 16.dp,
-                top = 16.dp,
-                end = 16.dp,
+                start = 24.dp,
+                top = 24.dp,
+                end = 24.dp,
                 bottom = paddingValues.calculateBottomPadding()
             ),
     ) {
@@ -115,7 +115,10 @@ fun CartList(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        TopOrderDetails(onAddMoreItems = { onAddMoreItems.invoke() })
+        TopOrderDetails(
+            onAddMoreItems = { onAddMoreItems.invoke() },
+            orderProductsSize = products.size
+        )
         ListCartItems(
             ticketItem = products,
             onInciseItem = { id -> onInciseItem.invoke(id) },
@@ -128,10 +131,11 @@ fun CartList(
 
 @Composable
 fun TopOrderDetails(
-    onAddMoreItems: () -> Unit
+    onAddMoreItems: () -> Unit,
+    orderProductsSize: Int,
 ) {
     NormalText(
-        value = stringResource(id = R.string.cart_has_items_on_ticket),
+        value = stringResource(id = R.string.cart_has_items_on_ticket, orderProductsSize),
         fontWeight = FontWeight.Bold,
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Start
@@ -165,34 +169,28 @@ fun ListCartItems(
     onInciseItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
-            .wrapContentSize()
-            .padding(top = 12.dp)
+            .padding(vertical = 8.dp)
+            .fillMaxHeight(0.85f)
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(vertical = 4.dp)
-                .weight(0.85f, false)
-        ) {
-            items(items = ticketItem) { item ->
-                ItemCart(item.product)
-                SetupItemQuantity(
-                    item.quantity,
-                    item.product.price,
-                    onInciseItem = {
-                        onInciseItem.invoke(item.product.id)
-                    },
-                    onRemoveItem = {
-                        onRemoveItem.invoke(item.product.id)
-                    }
-                )
-                Divider(
-                    color = Color.Black,
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+        items(items = ticketItem) { item ->
+            ItemCart(item.product)
+            SetupItemQuantity(
+                item.quantity,
+                item.product.price,
+                onInciseItem = {
+                    onInciseItem.invoke(item.product.id)
+                },
+                onRemoveItem = {
+                    onRemoveItem.invoke(item.product.id)
+                }
+            )
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
         }
     }
 }
@@ -202,36 +200,36 @@ fun ItemCart(item: Product) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Start
     ) {
         GlideImageLoader(
             modifier = Modifier
-                .wrapContentSize()
-                .width(120.dp)
-                .height(120.dp),
+                .requiredWidth(120.dp)
+                .fillMaxHeight()
+                .align(Alignment.Top),
             path = item.image,
         )
         Column(
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier
+                .padding(horizontal = 4.dp)
+                .wrapContentSize()
         ) {
             NormalText(
                 value = item.name,
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier,
                 fontWeight = FontWeight.Bold,
-                fontSize = 14
+                fontSize = 14,
+                textAlign = TextAlign.Start
             )
+            Spacer(modifier = Modifier.height(4.dp))
             NormalText(
                 value = item.description,
-                modifier = Modifier.wrapContentSize(),
-                fontSize = 12
+                modifier = Modifier,
+                fontSize = 14,
+                textAlign = TextAlign.Justify,
+                maxLines = 3,
             )
         }
-        NormalText(
-            value = "R$ ${item.price}",
-            modifier = Modifier.wrapContentSize(),
-            fontWeight = FontWeight.Bold,
-            fontSize = 16
-        )
     }
 }
 
@@ -263,7 +261,7 @@ fun SetupItemQuantity(
                 modifier = Modifier
                     .fillMaxHeight()
                     .align(Alignment.CenterVertically),
-                fontSize = 16
+                fontSize = 14
             )
             IconButton(
                 onClick = { onInciseItem.invoke() },
@@ -275,7 +273,6 @@ fun SetupItemQuantity(
                     tint = Color.Gray
                 )
             }
-
         }
         NormalText(
             value = "R$: ${itemPrice * quantity}",
@@ -289,8 +286,9 @@ fun ConfirmOrder(
     onConfirmOrder: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ButtonPrimary(
@@ -306,21 +304,21 @@ fun OrderResume(
     totalOrder: Double
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         NormalText(
             value = stringResource(id = R.string.cart_order_total),
             modifier = Modifier.wrapContentSize(),
+            fontWeight = FontWeight.Bold,
             fontSize = 18
         )
         NormalText(
             value = "R$: $totalOrder",
             fontWeight = FontWeight.Bold,
             modifier = Modifier.wrapContentSize(),
-            fontSize = 18
+            fontSize = 18,
+            textAlign = TextAlign.End
         )
     }
 }

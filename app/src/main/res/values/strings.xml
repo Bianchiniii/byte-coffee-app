@@ -51,7 +51,7 @@
     <!-- Cart -->
     <string name="cart_empty_state_title">Seu carrinho está vazio</string>
     <string name="cart_empty_state_message">Parece que você ainda não adicionou nenhum item no carrinho!</string>
-    <string name="cart_has_items_on_ticket">Você têm itens no carrinho</string>
+    <string name="cart_has_items_on_ticket">Você têm %1$s itens no carrinho</string>
     <string name="cart_items_list">Lista de itens</string>
     <string name="cart_add_more_items">Add itens</string>
     <string name="cart_order_total">Total do pedido</string>

@@ -64,6 +64,7 @@ fun CartCheckoutScreen(
             OrderResume()
             ShowSpacer()
             SelectOrderPaymentType(
+                // TODO: retornado pelo back
                 listOf(
                     PaymentMethod(
                         id = "1",
