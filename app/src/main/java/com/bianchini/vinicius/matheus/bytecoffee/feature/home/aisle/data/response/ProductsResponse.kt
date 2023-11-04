@@ -22,7 +22,7 @@ fun List<ProductsResponse>.toDomain() = map {
     Product(
         id = it.id,
         name = it.name,
-        description = "",
+        description = it.description,
         price = it.price,
         categoryId = it.categoryId,
         image = it.image

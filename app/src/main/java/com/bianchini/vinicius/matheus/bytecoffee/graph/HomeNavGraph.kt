@@ -16,7 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.presentation.ContentHomeScreen
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.presentation.CartScreen
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.presentation.CartCheckoutScreen
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.presentation.CartScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.presentation.OrdersScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.product.ProductScreen
@@ -42,13 +43,7 @@ fun HomeNavGraph(
                 viewModel
             )
         }
-        composable(route = HomeScreenRoutes.Cart.route) {
-            CartScreen(
-                paddingValues,
-                viewModel,
-                navController
-            )
-        }
+        cartNavGraph(navController = navController, viewModel, paddingValues)
         composable(route = HomeScreenRoutes.Profile.route) {
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(paddingValues, profileViewModel)
@@ -56,6 +51,34 @@ fun HomeNavGraph(
         ordersNavGraph(navController = navController, viewModel)
         detailsNavGraph(navController = navController, viewModel)
     }
+}
+
+fun NavGraphBuilder.cartNavGraph(
+    navController: NavHostController,
+    viewModel: HomeViewModel,
+    paddingValues: PaddingValues
+) {
+    navigation(
+        route = Graph.CART,
+        startDestination = HomeScreenRoutes.Cart.route
+    ) {
+        composable(route = HomeScreenRoutes.Cart.route) {
+            CartScreen(
+                paddingValues,
+                viewModel,
+                navController
+            )
+        }
+        composable(route = CartScreenRoutes.CartCheckout.route) {
+            CartCheckoutScreen(
+                navController = navController
+            )
+        }
+    }
+}
+
+sealed class CartScreenRoutes(val route: String) {
+    object CartCheckout : CartScreenRoutes(route = "checkout")
 }
 
 fun NavGraphBuilder.ordersNavGraph(navController: NavHostController, viewModel: HomeViewModel) {

@@ -55,7 +55,18 @@
     <string name="cart_items_list">Lista de itens</string>
     <string name="cart_add_more_items">Add itens</string>
     <string name="cart_order_total">Total do pedido</string>
-    <string name="cart_confirm_order">Finalizar pedido</string>
+    <string name="cart_confirm_order">Confirmar pedido</string>
+    <string name="cart_confirm">Confirmar</string>
+    <string name="cart_confirm_order_message">Pedido realizo com sucesso</string>
+    <string name="cart_finish">Fechar</string>
+
+    <!-- CART CHECKOUT -->
+    <string name="cart_checkout_title">Resumo do pedido</string>
+    <string name="cart_checkout_confirm_address">Verifique seu endereço</string>
+    <string name="cart_payment_method">Selecione a forma de pagamento</string>
+    <string name="cart_payment_method_credit_card">Cartão de crédito</string>
+    <string name="cart_payment_method_money">Dinheiro</string>
+    <string name="cart_confirm_payment">Confirmar pagamento</string>
 
     <!-- Utils -->
     <string name="util_image">Imagem</string>

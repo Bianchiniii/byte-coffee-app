@@ -1,4 +1,4 @@
-package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.presentation
+package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.presentation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -23,10 +24,15 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.outlined.CheckCircleOutline
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,6 +51,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
+import com.bianchini.vinicius.matheus.bytecoffee.graph.CartScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
@@ -59,6 +67,14 @@ fun CartScreen(
     val products = homeViewModel.ticketState.collectAsStateWithLifecycle().value.products
 
     val isCartEmpty = products.isEmpty()
+
+    /*  var showConfirmOrderBottomSheet by remember { mutableStateOf(false) }
+
+      if (showConfirmOrderBottomSheet) {
+          ConfirmOrderBottomSheet {
+              showConfirmOrderBottomSheet = false
+          }
+      }*/
 
     Box(
         modifier = Modifier
@@ -77,7 +93,7 @@ fun CartScreen(
         AnimatedVisibility(visible = !isCartEmpty) {
             CartList(
                 products = products,
-                onConfirmOrder = { homeViewModel.finishOrder() },
+                onConfirmOrder = { navController.navigate(CartScreenRoutes.CartCheckout.route) },
                 totalOrder = homeViewModel.getTicketTotal(),
                 onAddMoreItems = { navController.navigate(HomeScreenRoutes.Home.route) },
                 onInciseItem = { id -> homeViewModel.increaseTicketItemQuantity(id) },
@@ -280,7 +296,7 @@ fun ConfirmOrder(
         ButtonPrimary(
             onClick = { onConfirmOrder.invoke() },
             modifier = Modifier.fillMaxWidth(),
-            value = stringResource(id = R.string.cart_confirm_order),
+            value = stringResource(id = R.string.cart_confirm),
         )
     }
 }
@@ -307,6 +323,57 @@ fun OrderResume(
             fontSize = 18
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConfirmOrderBottomSheet(
+    onDismiss: () -> Unit
+) {
+    val modalBottomSheetState = rememberModalBottomSheetState()
+
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss() },
+        sheetState = modalBottomSheetState,
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.White,
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.CheckCircleOutline,
+                    contentDescription = null,
+                    tint = Color.Green,
+                    modifier = Modifier.size(48.dp)
+                )
+                NormalText(
+                    value = stringResource(id = R.string.cart_confirm_order_message),
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 18,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+            ButtonPrimary(
+                value = stringResource(id = R.string.cart_finish),
+                modifier = Modifier
+            ) {
+                // TODO: navegar para a tela de meus pedidos!
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun ConfirmOrderBottomSheetPreview() {
+    ConfirmOrderBottomSheet(onDismiss = {})
 }
 
 @Composable

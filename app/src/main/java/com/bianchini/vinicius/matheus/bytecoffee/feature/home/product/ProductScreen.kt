@@ -102,9 +102,10 @@ fun ProductScreen(
                 )
                 Column(
                     modifier = Modifier
-                        .padding(12.dp)
+                        .padding(24.dp)
                         .fillMaxSize()
-                        .weight(1f)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.SpaceBetween,
                 ) {
                     ProductDetail(
                         product = product,
@@ -129,7 +130,7 @@ fun ProductScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(12.dp),
+                            .padding(24.dp),
                         value = stringResource(R.string.product_details_add_item)
                     )
                 }
@@ -146,7 +147,7 @@ fun ProductDetail(
     onRemoveItem: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.wrapContentSize(),
+        modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -167,26 +168,15 @@ fun ProductDetail(
                 fontSize = 20
             )
         }
-        Divider(
-            modifier = Modifier.padding(
-                horizontal = 8.dp,
-                vertical = 12.dp
-            ), color = Color.LightGray
-        )
+        SetupDivider()
         NormalText(
-            // TODO: após add campo na tabela
-//            value = product.description,
-            value = "uma bela descrição",
+            value = product.description,
             modifier = Modifier
                 .wrapContentSize()
-                .align(Alignment.Start)
+                .align(Alignment.Start),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Justify,
         )
-        Divider(
-            modifier = Modifier.padding(
-                horizontal = 8.dp,
-                vertical = 12.dp
-            ), color = Color.LightGray
-        )
+        SetupDivider()
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -213,13 +203,17 @@ fun ProductDetail(
                 )
             }
         }
-        Divider(
-            modifier = Modifier.padding(
-                horizontal = 8.dp,
-                vertical = 12.dp
-            ), color = Color.LightGray
-        )
     }
+}
+
+@Composable
+fun SetupDivider() {
+    Divider(
+        modifier = Modifier.padding(
+            vertical = 24.dp
+        ),
+        color = Color.LightGray
+    )
 }
 
 @Preview(showBackground = true)

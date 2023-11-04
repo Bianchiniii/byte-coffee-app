@@ -19,9 +19,11 @@ fun NormalText(
     modifier: Modifier,
     textAlign: TextAlign = TextAlign.Center,
     fontWeight: FontWeight? = null,
-    textColor: Color = TextColor
+    textColor: Color = TextColor,
+    maxLines: Int = Int.MAX_VALUE,
 ) {
     Text(
+        maxLines = maxLines,
         text = value,
         modifier = modifier,
         style = MaterialTheme.typography.bodyLarge.copy(
