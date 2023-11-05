@@ -68,14 +68,6 @@ fun CartScreen(
 
     val isCartEmpty = products.isEmpty()
 
-    /*  var showConfirmOrderBottomSheet by remember { mutableStateOf(false) }
-
-      if (showConfirmOrderBottomSheet) {
-          ConfirmOrderBottomSheet {
-              showConfirmOrderBottomSheet = false
-          }
-      }*/
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -321,57 +313,6 @@ fun OrderResume(
             textAlign = TextAlign.End
         )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ConfirmOrderBottomSheet(
-    onDismiss: () -> Unit
-) {
-    val modalBottomSheetState = rememberModalBottomSheetState()
-
-    ModalBottomSheet(
-        onDismissRequest = { onDismiss() },
-        sheetState = modalBottomSheetState,
-        modifier = Modifier.fillMaxSize(),
-        containerColor = Color.White,
-        dragHandle = { BottomSheetDefaults.DragHandle() },
-    ) {
-        Column(
-            modifier = Modifier.padding(24.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.CheckCircleOutline,
-                    contentDescription = null,
-                    tint = Color.Green,
-                    modifier = Modifier.size(48.dp)
-                )
-                NormalText(
-                    value = stringResource(id = R.string.cart_confirm_order_message),
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 18,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            }
-            ButtonPrimary(
-                value = stringResource(id = R.string.cart_finish),
-                modifier = Modifier
-            ) {
-                // TODO: navegar para a tela de meus pedidos!
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun ConfirmOrderBottomSheetPreview() {
-    ConfirmOrderBottomSheet(onDismiss = {})
 }
 
 @Composable

@@ -67,6 +67,11 @@
     <string name="cart_payment_method_credit_card">Cartão de crédito</string>
     <string name="cart_payment_method_money">Dinheiro</string>
     <string name="cart_confirm_payment">Confirmar pagamento</string>
+    <string name="cart_checkout_pickup">Retirada</string>
+    <string name="cart_checkout_delivery">Entrega</string>
+    <string name="cart_checkout_delivery_address">Endereço de entrega</string>
+    <string name="cart_checkout_pickup_address">Endereço de retirada</string>
+    <string name="cart_checkout_edit_address">Editar endereço</string>
 
     <!-- Utils -->
     <string name="util_image">Imagem</string>
