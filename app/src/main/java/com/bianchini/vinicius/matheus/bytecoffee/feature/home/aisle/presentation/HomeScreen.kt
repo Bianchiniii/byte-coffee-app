@@ -272,7 +272,7 @@ fun ProductListItem(
                     modifier = Modifier.fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14,
-                    maxLines = 1
+                    maxLines = 1,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 NormalText(
@@ -286,6 +286,7 @@ fun ProductListItem(
                     value = "R$ ${food.price}",
                     modifier = Modifier.fillMaxWidth(),
                     fontSize = 16,
+                    textAlign = TextAlign.Center
                 )
             }
         }

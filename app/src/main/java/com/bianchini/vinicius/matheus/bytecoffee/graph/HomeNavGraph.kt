@@ -71,7 +71,8 @@ fun NavGraphBuilder.cartNavGraph(
         }
         composable(route = CartScreenRoutes.CartCheckout.route) {
             CartCheckoutScreen(
-                navController = navController
+                navController = navController,
+                homeViewModel = viewModel
             )
         }
     }
