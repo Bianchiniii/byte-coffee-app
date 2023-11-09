@@ -1,6 +1,8 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,10 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,9 +47,11 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.doma
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.DeliveryType.PICKUP
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.PaymentMethod
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.confirmorder.ConfirmOrderBottomSheet
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
+import com.bianchini.vinicius.matheus.bytecoffee.feature.loading.LoadingScreen
+import com.bianchini.vinicius.matheus.bytecoffee.graph.OrdersScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
-import com.bianchini.vinicius.matheus.bytecoffee.ui.components.EditAddressBottomSheet
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.GrayNeutral
 
@@ -59,31 +61,25 @@ fun CartCheckoutScreen(
     navController: NavController,
     homeViewModel: HomeViewModel
 ) {
-    val userAddress = homeViewModel.userAddress.collectAsStateWithLifecycle()
-    val userStreetAndNumberAddressValue =
-        "${userAddress.value?.street}, ${userAddress.value?.number}"
-    val userNeighborhoodAndCityAndState =
-        "${userAddress.value?.neighborhood}, ${userAddress.value?.cityAndState}"
+    val userAddress = homeViewModel.userAddress.collectAsStateWithLifecycle().value
 
-    val storeAddress = homeViewModel.storeAddress.collectAsStateWithLifecycle()
-    val storeStreetAndNumberValue = "${storeAddress.value.street}, ${storeAddress.value.number}"
-    val storeNeighborhoodAndCityAndState =
-        "${storeAddress.value.neighborhood}, ${storeAddress.value.cityAndState}"
+    val storeAddress = homeViewModel.storeAddress.collectAsStateWithLifecycle().value
 
     val paymentMethods = homeViewModel.paymentMethods.collectAsStateWithLifecycle()
+    val deliveryTypesList = homeViewModel.deliveryTypesList.collectAsStateWithLifecycle().value
 
-    val products = homeViewModel.ticketState.collectAsStateWithLifecycle().value.products
+    val ticketItems = homeViewModel.ticketState.collectAsStateWithLifecycle().value.products
 
-    val deliveryTypesList = listOf(PICKUP, DELIVERY)
+    val currentDeliveryType = remember { mutableStateOf(deliveryTypesList.first()) }
 
-    val currentDeliveryType = remember {
-        mutableStateOf(PICKUP)
-    }
+    val orderFinished = homeViewModel.orderFinished.collectAsStateWithLifecycle().value
 
-    var showEditAddressBottomSheet by remember { mutableStateOf(false) }
+    val loading = homeViewModel.loading.collectAsStateWithLifecycle().value
 
-    if (showEditAddressBottomSheet) {
-        EditAddressBottomSheet { showEditAddressBottomSheet = false }
+    if (orderFinished) {
+        ConfirmOrderBottomSheet {
+            navController.navigate(OrdersScreenRoutes.Orders.route)
+        }
     }
 
     Scaffold(
@@ -108,48 +104,58 @@ fun CartCheckoutScreen(
             )
         },
     ) {
-        Column(
-            modifier = Modifier
-                .padding(
-                    start = 24.dp,
-                    end = 24.dp,
-                    top = it.calculateTopPadding(),
-                    bottom = 24.dp
-                )
-                .fillMaxSize()
-        ) {
-            ShowSpacer()
-            NormalText(
-                value = stringResource(id = R.string.cart_checkout_read_order_and_confirm),
+        if (loading) {
+            LoadingScreen(
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Column(
                 modifier = Modifier
-            )
-            ShowSpacer()
-            SelectOrderDeliveryType(
-                deliveryTypes = deliveryTypesList,
-                onSelectDeliveryType = {
-                    currentDeliveryType.value = it
-                },
-                currentDeliveryType = currentDeliveryType.value
-            )
-            ShowSpacer()
-            DeliveryTypeInfo(
-                deliveryType = currentDeliveryType.value,
-                streetAndNumber = if (currentDeliveryType.value == PICKUP){
-                    storeStreetAndNumberValue
-                } else userStreetAndNumberAddressValue,
-                neighborhoodAndCityAndState = if (currentDeliveryType.value == PICKUP){
-                    storeNeighborhoodAndCityAndState
-                } else userNeighborhoodAndCityAndState,
-            )
-            ShowSpacer()
-            OrderResume(
-                orderProducts = products,
-                totalOrder = homeViewModel.getTicketTotal()
-            )
-            ShowSpacer()
-            SelectOrderPaymentType(paymentMethods = paymentMethods.value)
-            ShowSpacer()
-            ConfirmOrder(confirmPayment = { homeViewModel.finishOrder() })
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        top = it.calculateTopPadding(),
+                        bottom = 24.dp
+                    )
+                    .fillMaxSize()
+            ) {
+                ShowSpacer()
+                NormalText(
+                    value = stringResource(id = R.string.cart_checkout_read_order_and_confirm),
+                    modifier = Modifier
+                )
+                ShowSpacer()
+                SelectOrderDeliveryType(
+                    deliveryTypes = deliveryTypesList,
+                    onSelectDeliveryType = {
+                        homeViewModel.onSelectedDeliveryType(it)
+                        currentDeliveryType.value = it
+                    },
+                    currentDeliveryType = currentDeliveryType.value
+                )
+                ShowSpacer()
+                DeliveryTypeInfo(
+                    deliveryType = currentDeliveryType.value,
+                    streetAndNumber = if (currentDeliveryType.value == PICKUP) {
+                        "${storeAddress.street}, ${storeAddress.number}"
+                    } else "${userAddress?.street}, ${userAddress?.number}",
+                    neighborhoodAndCityAndState = if (currentDeliveryType.value == PICKUP) {
+                        "${storeAddress.neighborhood}, ${storeAddress.cityAndState}"
+                    } else "${userAddress?.neighborhood}, ${userAddress?.cityAndState}",
+                )
+                ShowSpacer()
+                OrderResume(
+                    orderProducts = ticketItems,
+                    totalOrder = homeViewModel.getTicketTotal()
+                )
+                ShowSpacer()
+                SelectOrderPaymentType(
+                    paymentMethods = paymentMethods.value,
+                    onPaymentMethodSelected = { homeViewModel.onSelectedPaymentMethod(it) }
+                )
+                ShowSpacer()
+                ConfirmOrder(confirmPayment = { homeViewModel.finishOrder() })
+            }
         }
     }
 }
@@ -181,10 +187,10 @@ fun DeliveryTypeInfo(
             NormalText(
                 value = stringResource(
                     id = R.string.cart_address_description,
-                    streetAndNumber,
-                    neighborhoodAndCityAndState
+                    listOf(streetAndNumber, neighborhoodAndCityAndState)
                 ),
-                modifier = Modifier
+                modifier = Modifier,
+                textAlign = TextAlign.Start
             )
         }
     }
@@ -210,24 +216,19 @@ fun SelectOrderDeliveryType(
     Card(
         colors = CardDefaults.cardColors(containerColor = GrayNeutral),
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            NormalText(
-                value = stringResource(id = R.string.cart_checkout_delivery_type_title),
-                modifier = Modifier,
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-                deliveryTypes.forEach { text ->
-                    RadioButton(
-                        selected = (text == currentDeliveryType),
-                        onClick = { onSelectDeliveryType(text) }
-                    )
-                    NormalText(value = text.value, modifier = Modifier)
-                }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            deliveryTypes.forEach { text ->
+                RadioButton(
+                    selected = (text == currentDeliveryType),
+                    onClick = { onSelectDeliveryType(text) }
+                )
+                NormalText(value = text.value, modifier = Modifier)
             }
         }
     }
@@ -344,25 +345,31 @@ fun OrderProductItem(ticketItem: TicketItem) {
             fontSize = 12
         )
     }
-
 }
 
 @Composable
 fun SelectOrderPaymentType(
-    paymentMethods: List<PaymentMethod>
+    paymentMethods: List<PaymentMethod>,
+    onPaymentMethodSelected: (PaymentMethod) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(containerColor = GrayNeutral),
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
             NormalText(
                 value = stringResource(id = R.string.cart_payment_method),
                 modifier = Modifier
             )
-            ShowSpacer()
             LazyRow(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                 items(paymentMethods) { payment ->
-                    ItemPaymentMethod(payment)
+                    ItemPaymentMethod(
+                        payment,
+                        onPaymentMethodSelected = { onPaymentMethodSelected(it) }
+                    )
                 }
             }
         }
@@ -370,17 +377,30 @@ fun SelectOrderPaymentType(
 }
 
 @Composable
-fun ItemPaymentMethod(paymentMethod: PaymentMethod) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
-        IconButton(onClick = {
-            // TODO: mapear click da forma de pagamento, atualizar no ticket
+fun ItemPaymentMethod(
+    paymentMethod: PaymentMethod,
+    onPaymentMethodSelected: (PaymentMethod) -> Unit
+) {
+    Box(modifier = Modifier
+        .padding(8.dp)
+        .clickable {
+            onPaymentMethodSelected(paymentMethod)
         }) {
-            Icon(imageVector = paymentMethod.icon, contentDescription = null)
+        Column(
+            modifier = Modifier.padding(4.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                imageVector = paymentMethod.icon,
+                contentDescription = null,
+                tint = paymentMethod.tint
+            )
+            NormalText(
+                value = paymentMethod.name,
+                modifier = Modifier
+            )
         }
-        NormalText(
-            value = paymentMethod.name,
-            modifier = Modifier
-        )
     }
 }
 
@@ -388,7 +408,10 @@ fun ItemPaymentMethod(paymentMethod: PaymentMethod) {
 fun ConfirmOrder(
     confirmPayment: () -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.Bottom) {
+    Column(
+        verticalArrangement = Arrangement.Bottom,
+        modifier = Modifier.fillMaxSize()
+    ) {
         ButtonPrimary(
             value = stringResource(id = R.string.cart_confirm_payment),
             modifier = Modifier.fillMaxWidth()

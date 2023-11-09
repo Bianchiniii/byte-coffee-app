@@ -11,13 +11,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.TextColor
 
-
 @Composable
 fun NormalText(
     value: String,
     fontSize: Int = 18,
     modifier: Modifier,
-    textAlign: TextAlign = TextAlign.Start,
+    textAlign: TextAlign = TextAlign.Center,
     fontWeight: FontWeight? = null,
     textColor: Color = TextColor,
     maxLines: Int = Int.MAX_VALUE,

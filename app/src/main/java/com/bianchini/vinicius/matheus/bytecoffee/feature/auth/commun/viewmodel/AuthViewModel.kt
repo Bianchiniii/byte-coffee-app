@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
@@ -137,8 +136,6 @@ class AuthViewModel @Inject constructor(
                 )
             )
             request.ifSuccess {
-                profileRepositoryDataSource.saveProfile(it!!.profile)
-
                 _isLoggingSuccessful.value = true
             }.ifFailure {
                 _isLoggingSuccessful.value = false

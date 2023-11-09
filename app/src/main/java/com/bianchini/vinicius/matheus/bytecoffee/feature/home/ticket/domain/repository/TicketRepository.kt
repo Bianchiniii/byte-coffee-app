@@ -1,5 +1,7 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository
 
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.DeliveryType
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.PaymentMethod
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.Ticket
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import kotlinx.coroutines.flow.StateFlow
@@ -24,5 +26,9 @@ interface TicketRepository {
 
     fun getTicketTotal(): Double
 
-    fun finishOrder()
+    fun setPaymentMethod(paymentMethod: PaymentMethod)
+
+    fun setDeliveryType(deliveryType: DeliveryType)
+
+    suspend fun finishOrder(): Resource.Result<Boolean, Throwable?>
 }

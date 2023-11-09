@@ -59,7 +59,7 @@
     <string name="cart_confirm">Confirmar</string>
     <string name="cart_confirm_order_message">Pedido realizo com sucesso</string>
     <string name="cart_finish">Fechar</string>
-    <string name="cart_address_description">%1$s \n%1$s</string>
+    <string name="cart_address_description">%1$s</string>
 
     <!-- CART CHECKOUT -->
     <string name="cart_checkout_title">Resumo do pedido</string>

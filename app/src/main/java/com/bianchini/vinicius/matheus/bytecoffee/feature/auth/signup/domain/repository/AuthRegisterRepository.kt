@@ -10,5 +10,5 @@ interface AuthRegisterRepository {
 
     suspend fun register(newAccount: NewAccount): Resource.Result<Boolean, Throwable>
 
-    suspend fun login(loginRequest: LoginRequest): Resource.Result<ProfileToken?, Throwable>
+    suspend fun login(loginRequest: LoginRequest): Resource.Result<Boolean, Throwable>
 }

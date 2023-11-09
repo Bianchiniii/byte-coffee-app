@@ -1,23 +1,51 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.data.repository
 
+import android.util.Log
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.DeliveryType
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.PaymentMethod
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.domain.model.OrderProducts
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.domain.model.TicketOrderProducts
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.Profile
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.Ticket
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import com.bianchini.vinicius.matheus.bytecoffee.services.AisleService
+import com.bianchini.vinicius.matheus.bytecoffee.services.OrderService
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TicketRepositoryImpl @Inject constructor(
-    private val service: AisleService
+    private val profileLocalDataSource: ProfileLocalDataSource,
+    private val orderService: OrderService,
 ) : TicketRepository {
+
+    private val profile: MutableStateFlow<Profile?> = MutableStateFlow(null)
+
+    init {
+        getProfile()
+    }
+
+    private fun getProfile() {
+        CoroutineScope(Dispatchers.IO + Job()).launch {
+            profile.value = profileLocalDataSource.getProfile().getOrNull()
+        }
+    }
 
     private var _currentTicket: MutableStateFlow<Ticket> = MutableStateFlow(
         Ticket(
             products = mutableListOf(),
+            paymentMethod = null,
+            deliveryType = null,
             isActive = false
         )
     )
@@ -37,7 +65,6 @@ class TicketRepositoryImpl @Inject constructor(
             product?.copy(quantity = newTicketItem.quantity) ?: ticket.products.add(newTicketItem)
         }
     }
-
 
     override fun getTicketItem(): List<TicketItem> = ticket.products
 
@@ -79,15 +106,42 @@ class TicketRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun setPaymentMethod(paymentMethod: PaymentMethod) {
+        _currentTicket.update {
+            it.copy(paymentMethod = paymentMethod)
+        }
+    }
+
+    override fun setDeliveryType(deliveryType: DeliveryType) {
+        _currentTicket.update {
+            it.copy(deliveryType = deliveryType)
+        }
+    }
+
     override fun getTicketTotal(): Double = ticket.total.invoke()
 
-    override fun finishOrder() {
-        runCatching {
-            val request = service.finishOrder(ticket)
+    override suspend fun finishOrder() = withContext(Dispatchers.IO) {
+        val ticketOrderProducts = TicketOrderProducts(
+            profileId = profile.value?.id ?: "1",
+            totalInCents = ticket.total().toInt(),
+            orderProducts = ticket.products.map {
+                OrderProducts(
+                    productId = it.product.id,
+                    quantity = it.quantity
+                )
+            },
+            deliveryType = ticket.deliveryType?.value ?: "",
+            paymentMethod = ticket.paymentMethod?.name ?: ""
+        )
 
-            request.execute()
-        }.onFailure {
+        val request = async {
+            orderService.finishOrder(ticketOrderProducts).execute()
+        }.await()
 
+        if (request.isSuccessful) {
+            Resource.Result.Success(true)
+        } else {
+            Resource.Result.Failure(Throwable("Erro ao finalizar pedido"))
         }
     }
 }

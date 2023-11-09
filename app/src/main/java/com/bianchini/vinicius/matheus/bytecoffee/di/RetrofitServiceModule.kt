@@ -2,6 +2,7 @@ package com.bianchini.vinicius.matheus.bytecoffee.di
 
 import com.bianchini.vinicius.matheus.bytecoffee.services.AisleService
 import com.bianchini.vinicius.matheus.bytecoffee.services.AuthService
+import com.bianchini.vinicius.matheus.bytecoffee.services.OrderService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,5 +23,11 @@ object RetrofitServiceModule {
     @Singleton
     fun providesAisleService(retrofit: Retrofit): AisleService {
         return retrofit.create(AisleService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesOrderService(retrofit: Retrofit): OrderService {
+        return retrofit.create(OrderService::class.java)
     }
 }
