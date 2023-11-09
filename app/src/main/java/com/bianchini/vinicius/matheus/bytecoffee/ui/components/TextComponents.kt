@@ -16,7 +16,7 @@ fun NormalText(
     value: String,
     fontSize: Int = 18,
     modifier: Modifier,
-    textAlign: TextAlign = TextAlign.Center,
+    textAlign: TextAlign = TextAlign.Start,
     fontWeight: FontWeight? = null,
     textColor: Color = TextColor,
     maxLines: Int = Int.MAX_VALUE,
