@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -51,6 +50,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.EditAccountForm
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
@@ -63,6 +63,8 @@ fun ProfileScreen(
     paddingValues: PaddingValues,
     profileViewModel: ProfileViewModel,
 ) {
+    val form by profileViewModel.form.collectAsStateWithLifecycle()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +79,7 @@ fun ProfileScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             SetupAvatar(profileViewModel)
             Spacer(modifier = Modifier.height(36.dp))
-            ChangeProfileInfo()
+            ChangeProfileInfo(form)
         }
     }
 }
@@ -188,9 +190,10 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
 }
 
 @Composable
-fun ChangeProfileInfo() {
+fun ChangeProfileInfo(form: EditAccountForm) {
     Column(modifier = Modifier.wrapContentSize()) {
         TextFieldComponents(
+            value = form.name,
             labelValue = stringResource(id = R.string.sign_up_your_name),
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,6 +208,7 @@ fun ChangeProfileInfo() {
             )
         )
         TextFieldComponents(
+            value = form.lastName,
             labelValue = stringResource(id = R.string.sign_up_last_name),
             modifier = Modifier
                 .fillMaxWidth()
@@ -219,12 +223,14 @@ fun ChangeProfileInfo() {
             )
         )
         LoginField(
+            value = form.email,
             onChange = { },
             modifier = Modifier.fillMaxWidth(),
             labelValue = "Email",
             placeholder = stringResource(id = R.string.login_email),
         )
         PasswordTextField(
+            value = form.password,
             labelValue = stringResource(id = R.string.profile_change_password),
             modifier = Modifier
                 .fillMaxWidth()

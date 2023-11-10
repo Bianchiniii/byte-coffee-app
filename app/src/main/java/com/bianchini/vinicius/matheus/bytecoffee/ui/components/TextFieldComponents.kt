@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,7 +22,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.ImeAction.Companion
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -31,28 +31,34 @@ import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
 
 @Composable
 fun TextFieldComponents(
+    value: String,
     labelValue: String,
     modifier: Modifier,
     leadingIcon: ImageVector,
     onValueChanged: (String) -> Unit,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    supportingText: String? = null,
+    isError: Boolean = false
 ) {
-    val textValue = remember {
-        mutableStateOf("")
-    }
 
     OutlinedTextField(
         modifier = modifier,
         label = { Text(text = labelValue) },
-        value = textValue.value,
+        value = value,
         singleLine = true,
         onValueChange = {
-            textValue.value = it
-
             onValueChanged(it)
         },
-
+        isError = isError,
+        supportingText = {
+            if (supportingText != null && isError) {
+                Text(
+                    text = supportingText,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = BgColor,
             unfocusedContainerColor = BgColor,
@@ -69,12 +75,13 @@ fun TextFieldComponents(
                 contentDescription = null,
                 tint = Primary
             )
-        }
+        },
     )
 }
 
 @Composable
 fun PasswordTextField(
+    value: String,
     labelValue: String,
     placeholder: String,
     leadingIcon: ImageVector,
@@ -82,11 +89,9 @@ fun PasswordTextField(
     onValueChanged: (String) -> Unit,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    supportingText: String? = null,
+    isError: Boolean = false
 ) {
-    val passwordValue = remember {
-        mutableStateOf("")
-    }
-
     val passwordVisible = remember {
         mutableStateOf(false)
     }
@@ -95,11 +100,18 @@ fun PasswordTextField(
         modifier = modifier,
         label = { Text(text = labelValue) },
         placeholder = { Text(text = placeholder) },
-        value = passwordValue.value,
+        value = value,
         onValueChange = {
-            passwordValue.value = it
-
             onValueChanged(it)
+        },
+        isError = isError,
+        supportingText = {
+            if (supportingText != null && isError) {
+                Text(
+                    text = supportingText,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
@@ -141,6 +153,7 @@ fun PasswordTextField(
 
 @Composable
 fun LoginField(
+    value: String,
     onChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     labelValue: String,
@@ -154,7 +167,9 @@ fun LoginField(
         focusManager.moveFocus(
             FocusDirection.Down
         )
-    })
+    }),
+    supportingText: String? = null,
+    isError: Boolean = false
 ) {
     val leadingIcon = @Composable {
         Icon(
@@ -164,19 +179,22 @@ fun LoginField(
         )
     }
 
-    val emailValue = remember {
-        mutableStateOf("")
-    }
-
     OutlinedTextField(
         modifier = modifier,
         label = { Text(text = labelValue) },
-        value = emailValue.value,
+        value = value,
         placeholder = { Text(text = placeholder) },
         onValueChange = {
-            emailValue.value = it
-
             onChange(it)
+        },
+        isError = isError,
+        supportingText = {
+            if (supportingText != null && isError) {
+                Text(
+                    text = supportingText,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = BgColor,

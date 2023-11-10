@@ -17,9 +17,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.presentation.event.OnTextInputChangedEventLogin
 import com.bianchini.vinicius.matheus.bytecoffee.graph.AuthScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
@@ -49,17 +47,11 @@ fun LoginScreen(
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    var emailValue by remember {
-        mutableStateOf("")
-    }
+    val loginCredential by authViewModel.loginCredential.collectAsStateWithLifecycle()
 
-    var passwordValue by remember {
-        mutableStateOf("")
-    }
+    val isLoggingSuccessful by authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
 
-    val isLoggingSuccessful = authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
-
-    if (isLoggingSuccessful.value) {
+    if (isLoggingSuccessful) {
         navController.popBackStack()
         navController.navigate(Graph.HOME)
     }
@@ -88,28 +80,37 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(64.dp))
             LoginField(
-                onChange = { emailValue = it },
+                value = loginCredential.login,
+                onChange = {
+                    authViewModel.onTextInputChangedEventLogin(
+                        OnTextInputChangedEventLogin.OnEmailChangedLogin(
+                            it
+                        )
+                    )
+                },
                 modifier = Modifier.fillMaxWidth(),
                 labelValue = "Email",
                 placeholder = stringResource(id = R.string.login_email),
             )
             PasswordTextField(
+                value = loginCredential.password,
                 labelValue = stringResource(id = R.string.sign_up_password),
                 placeholder = stringResource(id = R.string.sign_up_placeholder_password),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp)),
                 leadingIcon = Icons.Filled.Password,
-                onValueChanged = { passwordValue = it }
+                onValueChanged = {
+                    authViewModel.onTextInputChangedEventLogin(
+                        OnTextInputChangedEventLogin.OnPasswordChangedLogin(
+                            it
+                        )
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(10.dp))
             ButtonPrimary(
-                onClick = {
-                    authViewModel.login(
-                        email = emailValue,
-                        password = passwordValue
-                    )
-                },
+                onClick = { authViewModel.login() },
                 modifier = Modifier.fillMaxWidth(),
                 value = stringResource(id = R.string.sign_up)
             )

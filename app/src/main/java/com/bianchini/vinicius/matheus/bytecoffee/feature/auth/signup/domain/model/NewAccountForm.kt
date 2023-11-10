@@ -2,7 +2,7 @@ package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.mod
 
 import com.google.gson.annotations.SerializedName
 
-data class NewAccount(
+data class NewAccountForm(
     @SerializedName("profile_info")
     val profileInfo: ProfileInfo,
     @SerializedName("address")
@@ -10,26 +10,26 @@ data class NewAccount(
 ) {
     data class ProfileInfo(
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @SerializedName("surname")
-        val surname: String,
+        val surname: String = "",
         @SerializedName("email")
-        val email: String,
+        val email: String = "",
         @SerializedName("password")
-        val password: String,
+        val password: String = "",
         @SerializedName("role")
-        val role: String,
+        val role: String = "",
     )
 
     data class Address(
         @SerializedName("street")
-        val street: String,
+        val street: String = "",
         @SerializedName("number")
-        val number: String,
+        val number: String = "",
         @SerializedName("neighborhood")
-        val neighborhood: String,
+        val neighborhood: String = "",
         @SerializedName("city_and_state")
-        val cityAndState: String,
+        val cityAndState: String = "",
     )
 }
 

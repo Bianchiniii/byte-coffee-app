@@ -1,4 +1,4 @@
-package com.bianchini.vinicius.matheus.bytecoffee.ui.components
+package com.bianchini.vinicius.matheus.bytecoffee.feature.bottomsheet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bianchini.vinicius.matheus.bytecoffee.R
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.ByteCoffeeTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

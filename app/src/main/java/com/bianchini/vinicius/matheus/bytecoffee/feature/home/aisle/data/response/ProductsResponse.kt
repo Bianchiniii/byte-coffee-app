@@ -24,7 +24,8 @@ fun List<ProductsResponse>.toDomain() = map {
         name = it.name,
         description = it.description,
         price = it.price,
-        categoryId = it.categoryId,
+        // TODO: mapear categoria qnd implementado
+        categoryId = "",
         image = it.image
     )
 }

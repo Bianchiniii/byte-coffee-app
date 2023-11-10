@@ -3,7 +3,7 @@ package com.bianchini.vinicius.matheus.bytecoffee.di
 import android.content.Context
 import androidx.room.Room
 import com.bianchini.vinicius.matheus.bytecoffee.db.AppDatabase
-import com.bianchini.vinicius.matheus.bytecoffee.db.util.dbconstants.DbConstants.APP_DATABASE_NAME
+import com.bianchini.vinicius.matheus.bytecoffee.db.DbConstants.APP_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

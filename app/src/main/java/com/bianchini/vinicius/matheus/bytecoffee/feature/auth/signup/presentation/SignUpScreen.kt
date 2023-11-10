@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddLocation
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationCity
 import androidx.compose.material.icons.filled.Numbers
@@ -43,6 +42,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountForm
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.presentation.event.OnTextInputChangedEventRegister
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
@@ -56,6 +57,8 @@ fun SignUpScreen(
     navController: NavController,
     authViewModel: AuthViewModel,
 ) {
+    val form = authViewModel.form.collectAsStateWithLifecycle().value
+
     val successCreateAccount by authViewModel.successCreateAccount.collectAsStateWithLifecycle()
 
     if (successCreateAccount) {
@@ -77,9 +80,9 @@ fun SignUpScreen(
             verticalArrangement = Arrangement.Top,
         ) {
             SetupTopInfo()
-            SetupNewAccountInfo(authViewModel)
+            SetupNewAccountInfo(authViewModel, form)
             Divider(color = Color.Transparent, thickness = 1.dp, modifier = Modifier.padding(8.dp))
-            SetupAddressInfo(authViewModel)
+            SetupAddressInfo(authViewModel, form)
             Spacer(modifier = Modifier.weight(1f))
             ButtonPrimary(
                 onClick = { authViewModel.registerAccount() },
@@ -112,7 +115,7 @@ fun SetupTopInfo() {
 }
 
 @Composable
-fun SetupAddressInfo(authViewModel: AuthViewModel) {
+fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
     Column(Modifier.fillMaxWidth()) {
         NormalText(
             modifier = Modifier
@@ -124,48 +127,76 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
             textAlign = TextAlign.Start,
         )
         TextFieldComponents(
+            value = form.address.street,
             labelValue = stringResource(id = R.string.address_street),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.AddLocation,
-            onValueChanged = { authViewModel.updateProfileAddressStreet(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnStreetChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
         TextFieldComponents(
+            value = form.address.neighborhood,
             labelValue = stringResource(id = R.string.address_neighborhood),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Home,
-            onValueChanged = { authViewModel.updateProfileAddressNeighborhood(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnNeighborhoodChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
         TextFieldComponents(
+            value = form.address.number,
             labelValue = stringResource(id = R.string.address_number),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Numbers,
-            onValueChanged = { authViewModel.updateProfileAddressNumber(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnNumberChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
             ),
         )
         TextFieldComponents(
+            value = form.address.cityAndState,
             labelValue = stringResource(id = R.string.address_city_state),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.LocationCity,
-            onValueChanged = { authViewModel.updateProfileAddressCityAndState(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnCityAnStateChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
@@ -175,7 +206,7 @@ fun SetupAddressInfo(authViewModel: AuthViewModel) {
 }
 
 @Composable
-fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
+fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
     Column(Modifier.wrapContentHeight()) {
         NormalText(
             modifier = Modifier
@@ -187,43 +218,71 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel) {
             textAlign = TextAlign.Start,
         )
         TextFieldComponents(
+            value = form.profileInfo.name,
             labelValue = stringResource(id = R.string.sign_up_your_name),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Person,
-            onValueChanged = { authViewModel.updateProfileInfoName(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnNameChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
         TextFieldComponents(
+            value = form.profileInfo.surname,
             labelValue = stringResource(id = R.string.sign_up_last_name),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             Icons.Filled.Person,
-            onValueChanged = { authViewModel.updateProfileInfoSurname(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnLastNameChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
         LoginField(
-            onChange = { authViewModel.updateProfileInfoEmail(it) },
+            value = form.profileInfo.email,
+            onChange = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnEmailChangedRegister(
+                        it
+                    )
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             labelValue = stringResource(id = R.string.sign_up_email),
             placeholder = stringResource(id = R.string.login_email),
         )
         PasswordTextField(
+            value = form.profileInfo.password,
             labelValue = stringResource(id = R.string.sign_up_password),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Password,
             placeholder = stringResource(id = R.string.sign_up_placeholder_password),
-            onValueChanged = { authViewModel.updateProfileInfoPassword(it) },
+            onValueChanged = {
+                authViewModel.onTextInputChangedEventRegister(
+                    OnTextInputChangedEventRegister.OnPasswordChangedRegister(
+                        it
+                    )
+                )
+            },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             )

@@ -1,12 +1,10 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.data.repository
 
 import Resource
-import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.data.response.toProfileToken
-import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
-import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginCredential
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountForm
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.response.toDomain
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.toEntity
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.address.ProfileLocalAddressDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import com.bianchini.vinicius.matheus.bytecoffee.services.AuthService
@@ -21,9 +19,9 @@ class AuthRegisterRepositoryImpl @Inject constructor(
     private val profileLocalAddressDataSource: ProfileLocalAddressDataSource,
 ) : AuthRegisterRepository {
 
-    override suspend fun register(newAccount: NewAccount) = withContext(Dispatchers.IO) {
+    override suspend fun register(newAccountForm: NewAccountForm) = withContext(Dispatchers.IO) {
         val request = async {
-            service.register(newAccount).execute()
+            service.register(newAccountForm).execute()
         }.await()
 
         if (request.isSuccessful) {
@@ -39,9 +37,9 @@ class AuthRegisterRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun login(loginRequest: LoginRequest) = withContext(Dispatchers.IO) {
+    override suspend fun login(loginCredential: LoginCredential) = withContext(Dispatchers.IO) {
         val request = async {
-            service.login(loginRequest).execute()
+            service.login(loginCredential).execute()
         }.await()
 
         if (request.isSuccessful) {

@@ -2,9 +2,11 @@ package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginRequest
-import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccount
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginCredential
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.presentation.event.OnTextInputChangedEventLogin
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountForm
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.presentation.event.OnTextInputChangedEventRegister
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
@@ -34,24 +36,18 @@ class AuthViewModel @Inject constructor(
     private val _isLoggedProfile = MutableStateFlow(false)
     val isLoggedProfile = _isLoggedProfile.asStateFlow()
 
-    private val _profileInfo = MutableStateFlow(
-        NewAccount.ProfileInfo(
-            name = "",
-            surname = "",
-            email = "",
-            password = "",
-            role = DEFAULT_ROLE
+    private val _form = MutableStateFlow(
+        NewAccountForm(
+            profileInfo = NewAccountForm.ProfileInfo(
+                role = DEFAULT_ROLE
+            ),
+            address = NewAccountForm.Address()
         )
     )
+    val form = _form.asStateFlow()
 
-    private val _profileAddress = MutableStateFlow(
-        NewAccount.Address(
-            street = "",
-            number = "",
-            neighborhood = "",
-            cityAndState = ""
-        )
-    )
+    private val _loginCredential = MutableStateFlow(LoginCredential())
+    val loginCredential = _loginCredential.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -61,86 +57,119 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun onTextInputChangedEventRegister(event: OnTextInputChangedEventRegister) {
+        when (event) {
+            is OnTextInputChangedEventRegister.OnNameChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        profileInfo = it.profileInfo.copy(name = event.name)
+                    )
+                }
+            }
+
+            is OnTextInputChangedEventRegister.OnLastNameChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        profileInfo = it.profileInfo.copy(surname = event.lastName)
+                    )
+                }
+            }
+
+            is OnTextInputChangedEventRegister.OnEmailChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        profileInfo = it.profileInfo.copy(email = event.email)
+                    )
+                }
+            }
+
+
+            is OnTextInputChangedEventRegister.OnPasswordChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        profileInfo = it.profileInfo.copy(password = event.password)
+                    )
+                }
+            }
+
+            is OnTextInputChangedEventRegister.OnStreetChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        address = it.address.copy(street = event.street)
+                    )
+                }
+            }
+
+
+            is OnTextInputChangedEventRegister.OnNumberChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        address = it.address.copy(number = event.number)
+                    )
+                }
+            }
+
+
+            is OnTextInputChangedEventRegister.OnNeighborhoodChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        address = it.address.copy(neighborhood = event.neighborhood),
+                    )
+                }
+            }
+
+
+            is OnTextInputChangedEventRegister.OnCityAnStateChangedRegister -> {
+                _form.update {
+                    it.copy(
+                        address = it.address.copy(
+                            cityAndState = event.cityAndState
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     fun registerAccount() {
         viewModelScope.launch {
-            val newAccount = NewAccount(
-                profileInfo = _profileInfo.value,
-                address = _profileAddress.value
-            )
-
-            val request = authRegisterRepository.register(newAccount)
+            val request = authRegisterRepository.register(_form.value)
 
             _successCreateAccount.value = request.getOrNull() ?: false
         }
     }
 
-    fun updateProfileInfoName(name: String) {
-        _profileInfo.update {
-            it.copy(
-                name = name
-            )
-        }
-    }
-
-    fun updateProfileInfoSurname(surname: String) {
-        _profileInfo.update {
-            it.copy(surname = surname)
-        }
-    }
-
-    fun updateProfileInfoEmail(email: String) {
-        _profileInfo.update {
-            it.copy(email = email)
-        }
-    }
-
-    fun updateProfileInfoPassword(password: String) {
-        _profileInfo.update {
-            it.copy(password = password)
-        }
-    }
-
-    fun updateProfileAddressStreet(street: String) {
-        _profileAddress.update {
-            it.copy(street = street)
-        }
-    }
-
-    fun updateProfileAddressNumber(number: String) {
-        _profileAddress.update {
-            it.copy(number = number)
-        }
-    }
-
-    fun updateProfileAddressNeighborhood(neighborhood: String) {
-        _profileAddress.update {
-            it.copy(neighborhood = neighborhood)
-        }
-    }
-
-    fun updateProfileAddressCityAndState(cityAndState: String) {
-        _profileAddress.update {
-            it.copy(cityAndState = cityAndState)
-        }
-    }
-
-    fun login(
-        email: String,
-        password: String
-    ) {
+    fun login() {
         viewModelScope.launch {
-            val request = authRegisterRepository.login(
-                LoginRequest(
-                    login = email,
-                    password = password
-                )
-            )
+            val request = authRegisterRepository.login(_loginCredential.value)
+
             request.ifSuccess {
                 _isLoggingSuccessful.value = true
             }.ifFailure {
                 _isLoggingSuccessful.value = false
             }
         }
+    }
+
+    fun onTextInputChangedEventLogin(event: OnTextInputChangedEventLogin) {
+        when (event) {
+            is OnTextInputChangedEventLogin.OnEmailChangedLogin -> {
+                _loginCredential.update {
+                    it.copy(
+                        login = event.email
+                    )
+                }
+            }
+
+            is OnTextInputChangedEventLogin.OnPasswordChangedLogin -> {
+                _loginCredential.update {
+                    it.copy(
+                        password = event.password
+                    )
+                }
+            }
+        }
+
     }
 
     companion object {
