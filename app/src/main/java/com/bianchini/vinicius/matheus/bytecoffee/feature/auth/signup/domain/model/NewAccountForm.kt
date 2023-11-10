@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model
 
+import androidx.annotation.StringRes
 import com.google.gson.annotations.SerializedName
 
 data class NewAccountForm(
@@ -32,4 +33,15 @@ data class NewAccountForm(
         val cityAndState: String = "",
     )
 }
+
+data class NewAccountFormError(
+    @StringRes val nameError: Int? = null,
+    @StringRes val surnameError: Int? = null,
+    @StringRes val emailError: Int? = null,
+    @StringRes val passwordError: Int? = null,
+    @StringRes val streetError: Int? = null,
+    @StringRes val numberError: Int? = null,
+    @StringRes val neighborhoodError: Int? = null,
+    @StringRes val cityAndStateError: Int? = null,
+)
 

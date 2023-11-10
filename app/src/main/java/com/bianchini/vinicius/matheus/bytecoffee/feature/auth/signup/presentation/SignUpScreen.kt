@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddLocation
 import androidx.compose.material.icons.filled.Home
@@ -43,6 +45,7 @@ import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountForm
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountFormError
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.presentation.event.OnTextInputChangedEventRegister
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
@@ -58,6 +61,7 @@ fun SignUpScreen(
     authViewModel: AuthViewModel,
 ) {
     val form = authViewModel.form.collectAsStateWithLifecycle().value
+    val formError by authViewModel.formError.collectAsStateWithLifecycle()
 
     val successCreateAccount by authViewModel.successCreateAccount.collectAsStateWithLifecycle()
 
@@ -76,13 +80,14 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .background(color = Color.White),
+                .background(color = Color.White)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
         ) {
             SetupTopInfo()
-            SetupNewAccountInfo(authViewModel, form)
+            SetupNewAccountInfo(authViewModel, form, formError)
             Divider(color = Color.Transparent, thickness = 1.dp, modifier = Modifier.padding(8.dp))
-            SetupAddressInfo(authViewModel, form)
+            SetupAddressInfo(authViewModel, form, formError)
             Spacer(modifier = Modifier.weight(1f))
             ButtonPrimary(
                 onClick = { authViewModel.registerAccount() },
@@ -115,7 +120,11 @@ fun SetupTopInfo() {
 }
 
 @Composable
-fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
+fun SetupAddressInfo(
+    authViewModel: AuthViewModel,
+    form: NewAccountForm,
+    formError: NewAccountFormError
+) {
     Column(Modifier.fillMaxWidth()) {
         NormalText(
             modifier = Modifier
@@ -132,6 +141,10 @@ fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
+            isError = formError.streetError != null,
+            supportingText = if (formError.streetError != null) {
+                stringResource(id = formError.streetError)
+            } else null,
             leadingIcon = Icons.Filled.AddLocation,
             onValueChanged = {
                 authViewModel.onTextInputChangedEventRegister(
@@ -159,6 +172,10 @@ fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
                     )
                 )
             },
+            isError = formError.neighborhoodError != null,
+            supportingText = if (formError.neighborhoodError != null) {
+                stringResource(id = formError.neighborhoodError)
+            } else null,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
@@ -178,6 +195,10 @@ fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
                     )
                 )
             },
+            isError = formError.numberError != null,
+            supportingText = if (formError.numberError != null) {
+                stringResource(id = formError.numberError)
+            } else null,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
@@ -190,6 +211,10 @@ fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.LocationCity,
+            isError = formError.cityAndStateError != null,
+            supportingText = if (formError.cityAndStateError != null) {
+                stringResource(id = formError.cityAndStateError)
+            } else null,
             onValueChanged = {
                 authViewModel.onTextInputChangedEventRegister(
                     OnTextInputChangedEventRegister.OnCityAnStateChangedRegister(
@@ -206,7 +231,11 @@ fun SetupAddressInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
 }
 
 @Composable
-fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
+fun SetupNewAccountInfo(
+    authViewModel: AuthViewModel,
+    form: NewAccountForm,
+    formError: NewAccountFormError
+) {
     Column(Modifier.wrapContentHeight()) {
         NormalText(
             modifier = Modifier
@@ -220,6 +249,10 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
         TextFieldComponents(
             value = form.profileInfo.name,
             labelValue = stringResource(id = R.string.sign_up_your_name),
+            isError = formError.nameError != null,
+            supportingText = if (formError.nameError != null) {
+                stringResource(id = formError.nameError)
+            } else null,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
@@ -239,10 +272,14 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
         TextFieldComponents(
             value = form.profileInfo.surname,
             labelValue = stringResource(id = R.string.sign_up_last_name),
+            isError = formError.surnameError != null,
+            supportingText = if (formError.surnameError != null) {
+                stringResource(id = formError.surnameError)
+            } else null,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
-            Icons.Filled.Person,
+            leadingIcon = Icons.Filled.Person,
             onValueChanged = {
                 authViewModel.onTextInputChangedEventRegister(
                     OnTextInputChangedEventRegister.OnLastNameChangedRegister(
@@ -264,6 +301,10 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
                     )
                 )
             },
+            isError = formError.emailError != null,
+            supportingText = if (formError.emailError != null) {
+                stringResource(id = formError.emailError)
+            } else null,
             modifier = Modifier.fillMaxWidth(),
             labelValue = stringResource(id = R.string.sign_up_email),
             placeholder = stringResource(id = R.string.login_email),
@@ -274,6 +315,10 @@ fun SetupNewAccountInfo(authViewModel: AuthViewModel, form: NewAccountForm) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
+            isError = formError.passwordError != null,
+            supportingText = if (formError.passwordError != null) {
+                stringResource(id = formError.passwordError)
+            } else null,
             leadingIcon = Icons.Filled.Password,
             placeholder = stringResource(id = R.string.sign_up_placeholder_password),
             onValueChanged = {

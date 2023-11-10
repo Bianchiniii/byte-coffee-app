@@ -15,8 +15,14 @@
     <string name="sign_up_show_password">Mostrar senha</string>
     <string name="sign_up_hide_password">Esconder senha</string>
     <string name="sign_up_create_account">Criar nova conta</string>
+    <string name="sign_up_name_error">O nome está em branco</string>
+    <string name="sign_up_last_name_error">O sobrenome está em branco</string>
     <string name="sign_up_email_error">o email está em branco</string>
     <string name="sign_up_password_error">A senha está em branco</string>
+    <string name="sign_up_street_error">A rua está em branco</string>
+    <string name="sign_up_number_error">O número está em branco</string>
+    <string name="sign_up_neighborhood_error">O bairro está em branco</string>
+    <string name="sign_up_city_and_state_error">A cidade e estado estão em branco</string>
 
     <!-- ADDRESS -->
     <string name="address_title">Endereço</string>
@@ -27,6 +33,8 @@
 
     <!-- Login -->
     <string name="login_email">Insira seu email</string>
+    <string name="login_up_email_error">o email está em branco</string>
+    <string name="login_up_password_error">A senha está em branco</string>
 
     <!-- Product Details -->
     <string name="product_details_select_size">%1$s - Escolha o tamanho</string>
