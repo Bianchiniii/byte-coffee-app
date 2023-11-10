@@ -48,6 +48,7 @@ fun LoginScreen(
     authViewModel: AuthViewModel
 ) {
     val loginCredential by authViewModel.loginCredential.collectAsStateWithLifecycle()
+    val loginCredentialError by authViewModel.loginCredentialError.collectAsStateWithLifecycle()
 
     val isLoggingSuccessful by authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
 
@@ -88,6 +89,10 @@ fun LoginScreen(
                         )
                     )
                 },
+                isError = loginCredentialError.loginError != null,
+                supportingText = if (loginCredentialError.loginError != null) {
+                    stringResource(id = loginCredentialError.loginError!!)
+                } else null,
                 modifier = Modifier.fillMaxWidth(),
                 labelValue = "Email",
                 placeholder = stringResource(id = R.string.login_email),
@@ -100,6 +105,10 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp)),
                 leadingIcon = Icons.Filled.Password,
+                isError = loginCredentialError.passwordError != null,
+                supportingText = if (loginCredentialError.passwordError != null) {
+                    stringResource(id = loginCredentialError.passwordError!!)
+                } else null,
                 onValueChanged = {
                     authViewModel.onTextInputChangedEventLogin(
                         OnTextInputChangedEventLogin.OnPasswordChangedLogin(

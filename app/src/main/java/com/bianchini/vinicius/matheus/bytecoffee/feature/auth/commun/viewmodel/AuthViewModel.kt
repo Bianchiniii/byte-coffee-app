@@ -3,6 +3,8 @@ package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginCredential
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginCredentialError
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.usecase.LoginUseCase
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.presentation.event.OnTextInputChangedEventLogin
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.model.NewAccountForm
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.domain.repository.AuthRegisterRepository
@@ -21,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRegisterRepository: AuthRegisterRepository,
-    private val profileRepositoryDataSource: ProfileLocalDataSource
+    private val profileRepositoryDataSource: ProfileLocalDataSource,
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     private val _uiStateError = MutableStateFlow(false)
@@ -48,6 +51,9 @@ class AuthViewModel @Inject constructor(
 
     private val _loginCredential = MutableStateFlow(LoginCredential())
     val loginCredential = _loginCredential.asStateFlow()
+
+    private val _loginCredentialError = MutableStateFlow(LoginCredentialError())
+    val loginCredentialError = _loginCredentialError.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -159,12 +165,29 @@ class AuthViewModel @Inject constructor(
                         login = event.email
                     )
                 }
+
+                val emailUseCaseResult = loginUseCase.validateEmailLoginUseCase(event.email)
+
+                _loginCredentialError.update {
+                    it.copy(
+                        loginError = emailUseCaseResult.errorMessage
+                    )
+                }
             }
 
             is OnTextInputChangedEventLogin.OnPasswordChangedLogin -> {
                 _loginCredential.update {
                     it.copy(
                         password = event.password
+                    )
+                }
+
+                val passwordUseCaseResult =
+                    loginUseCase.validatePasswordLoginUseCase(event.password)
+
+                _loginCredentialError.update {
+                    it.copy(
+                        passwordError = passwordUseCaseResult.errorMessage
                     )
                 }
             }
