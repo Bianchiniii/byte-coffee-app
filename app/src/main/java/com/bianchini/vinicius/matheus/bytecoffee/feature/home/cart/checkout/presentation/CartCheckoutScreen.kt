@@ -414,9 +414,10 @@ fun ConfirmOrder(
     ) {
         ButtonPrimary(
             value = stringResource(id = R.string.cart_confirm_payment),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            confirmPayment()
-        }
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                confirmPayment()
+            }
+        )
     }
 }

@@ -64,10 +64,11 @@ fun EditAddressBottomSheet(
             }
             ButtonPrimary(
                 value = stringResource(id = R.string.cart_finish),
-                modifier = Modifier
-            ) {
-                // TODO: navegar para a tela de meus pedidos!
-            }
+                modifier = Modifier,
+                onClick = {
+                    // TODO: navegar para a tela de meus pedidos!
+                }
+            )
         }
     }
 }

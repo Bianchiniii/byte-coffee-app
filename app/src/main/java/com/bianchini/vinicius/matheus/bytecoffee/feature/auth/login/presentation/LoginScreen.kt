@@ -49,7 +49,7 @@ fun LoginScreen(
 ) {
     val loginCredential by authViewModel.loginCredential.collectAsStateWithLifecycle()
     val loginCredentialError by authViewModel.loginCredentialError.collectAsStateWithLifecycle()
-
+    val loginCredentialEnabled by authViewModel.isLoginCredentialEnabled.collectAsStateWithLifecycle()
     val isLoggingSuccessful by authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
 
     if (isLoggingSuccessful) {
@@ -121,7 +121,8 @@ fun LoginScreen(
             ButtonPrimary(
                 onClick = { authViewModel.login() },
                 modifier = Modifier.fillMaxWidth(),
-                value = stringResource(id = R.string.sign_up)
+                value = stringResource(id = R.string.sign_up),
+                enabled = loginCredentialEnabled
             )
             ClickableText(
                 modifier = Modifier

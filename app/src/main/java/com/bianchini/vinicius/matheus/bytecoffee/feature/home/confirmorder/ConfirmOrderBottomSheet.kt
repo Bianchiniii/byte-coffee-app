@@ -74,12 +74,13 @@ fun ConfirmOrderBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally),
-            ) {
-                coroutineScope.launch {
-                    onDismiss()
-                    modalBottomSheetState.hide()
+                onClick = {
+                    coroutineScope.launch {
+                        onDismiss()
+                        modalBottomSheetState.hide()
+                    }
                 }
-            }
+            )
         }
     }
 }

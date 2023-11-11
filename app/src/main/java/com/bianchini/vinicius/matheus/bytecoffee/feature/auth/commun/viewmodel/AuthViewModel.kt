@@ -16,8 +16,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
 import extension.ifFailure
 import extension.ifSuccess
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,9 +33,6 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
 ) : ViewModel() {
-
-    private val _uiStateError = MutableStateFlow(false)
-    val uiStateError = _uiStateError.asStateFlow()
 
     private val _successCreateAccount = MutableStateFlow(false)
     val successCreateAccount = _successCreateAccount.asStateFlow()
@@ -55,11 +56,29 @@ class AuthViewModel @Inject constructor(
     private val _formError = MutableStateFlow(NewAccountFormError())
     val formError = _formError.asStateFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isRegisterEnabled = _formError.mapLatest {
+        isInputRegisterValid()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = false
+    )
+
     private val _loginCredential = MutableStateFlow(LoginCredential())
     val loginCredential = _loginCredential.asStateFlow()
 
     private val _loginCredentialError = MutableStateFlow(LoginCredentialError())
     val loginCredentialError = _loginCredentialError.asStateFlow()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val isLoginCredentialEnabled = _loginCredentialError.mapLatest {
+        isLoginInputsValid()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = false
+    )
 
     init {
         viewModelScope.launch {
@@ -210,6 +229,43 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    private fun isInputRegisterValid(): Boolean {
+        val currentRegisterForm = _form.value
+
+        val nameUseCaseResult =
+            registerUseCase.validateNameRegisterUseCase(currentRegisterForm.profileInfo.name)
+        val lastNameUseCaseResult =
+            registerUseCase.validateLastNameRegisterUseCase(currentRegisterForm.profileInfo.surname)
+        val emailUseCaseResult =
+            registerUseCase.validateEmailRegisterUseCase(currentRegisterForm.profileInfo.email)
+        val passwordUseCaseResult =
+            registerUseCase.validatePasswordRegisterUseCase(currentRegisterForm.profileInfo.password)
+        val streetUseCaseResult =
+            registerUseCase.validateStreetRegisterUseCase(currentRegisterForm.address.street)
+        val numberUseCaseResult =
+            registerUseCase.validateNumberRegisterUseCase(currentRegisterForm.address.number)
+        val neighborhoodUseCaseResult =
+            registerUseCase.validateNeighborhoodRegisterUseCase(currentRegisterForm.address.neighborhood)
+        val cityAndStateUseCaseResult =
+            registerUseCase.validateCityAndStateRegisterUseCase(currentRegisterForm.address.cityAndState)
+
+        val hasError = listOf(
+            nameUseCaseResult,
+            lastNameUseCaseResult,
+            emailUseCaseResult,
+            passwordUseCaseResult,
+            streetUseCaseResult,
+            numberUseCaseResult,
+            neighborhoodUseCaseResult,
+            cityAndStateUseCaseResult
+        ).any {
+            !it.isSuccess
+        }
+
+        return hasError.not()
+    }
+
+
     fun registerAccount() {
         viewModelScope.launch {
             val request = authRegisterRepository.register(_form.value)
@@ -265,7 +321,24 @@ class AuthViewModel @Inject constructor(
                 }
             }
         }
+    }
 
+    private fun isLoginInputsValid(): Boolean {
+        val currentLoginCredential = _loginCredential.value
+
+        val passwordUseCaseResult =
+            loginUseCase.validatePasswordLoginUseCase(currentLoginCredential.password)
+        val emailUseCaseResult =
+            loginUseCase.validateEmailLoginUseCase(currentLoginCredential.login)
+
+        val hasError = listOf(
+            passwordUseCaseResult,
+            emailUseCaseResult
+        ).any {
+            !it.isSuccess
+        }
+
+        return hasError.not()
     }
 
     companion object {

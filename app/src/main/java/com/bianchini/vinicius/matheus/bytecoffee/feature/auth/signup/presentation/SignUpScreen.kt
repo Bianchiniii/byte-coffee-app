@@ -3,6 +3,7 @@ package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.presentati
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,6 +63,7 @@ fun SignUpScreen(
 ) {
     val form = authViewModel.form.collectAsStateWithLifecycle().value
     val formError by authViewModel.formError.collectAsStateWithLifecycle()
+    val isRegisterEnabled by authViewModel.isRegisterEnabled.collectAsStateWithLifecycle()
 
     val successCreateAccount by authViewModel.successCreateAccount.collectAsStateWithLifecycle()
 
@@ -93,6 +95,7 @@ fun SignUpScreen(
                 onClick = { authViewModel.registerAccount() },
                 modifier = Modifier.fillMaxWidth(),
                 value = stringResource(id = R.string.sign_up_finish_sign_up),
+                enabled = isRegisterEnabled
             )
         }
     }

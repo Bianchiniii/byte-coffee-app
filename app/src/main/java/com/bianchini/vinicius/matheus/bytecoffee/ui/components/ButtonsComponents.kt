@@ -14,13 +14,17 @@ import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
 fun ButtonPrimary(
     value: String,
     modifier: Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = { onClick() },
         modifier = modifier,
         contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Primary),
+        colors = if (enabled) ButtonDefaults.buttonColors(Primary) else ButtonDefaults.buttonColors(
+            contentColor = Color.Gray
+        ),
+        enabled = enabled
     ) {
         Text(
             text = value,
