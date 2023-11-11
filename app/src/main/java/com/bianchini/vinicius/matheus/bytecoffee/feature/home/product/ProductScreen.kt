@@ -4,10 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -58,84 +62,81 @@ fun ProductScreen(
         return
     }
 
-    var itemQuantity by remember {
-        mutableIntStateOf(1)
-    }
+    var itemQuantity by remember { mutableIntStateOf(1) }
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Background),
         topBar = {
-            Surface(shadowElevation = 3.dp) {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.util_navigate_back)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TopAppBarDefaults.mediumTopAppBarColors(
-                        containerColor = Color.White,
-                    ),
-                    navigationIcon = {
-                        if (navController.previousBackStackEntry != null) {
-                            IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = stringResource(R.string.util_navigate_back)
-                                )
-                            }
+            TopAppBar(
+                title = { Text(stringResource(R.string.util_navigate_back)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = Color.White,
+                ),
+                navigationIcon = {
+                    if (navController.previousBackStackEntry != null) {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.util_navigate_back)
+                            )
                         }
-                    },
-                )
-            }
+                    }
+                },
+            )
         }
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues = it),
-            content = {
-                GlideImageLoader(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    contentScale = ContentScale.FillBounds,
-                    path = product.image,
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxSize()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    ProductDetail(
-                        product = product,
-                        quantity = itemQuantity,
-                        onInciseItem = {
-                            itemQuantity += 1
-                        },
-                        onRemoveItem = {
-                            if (itemQuantity > 1) {
-                                itemQuantity -= 1
-                            }
-                        },
-                    )
-                    ButtonPrimary(
-                        onClick = {
-                            homeViewModel.addProduct(
-                                quantity = itemQuantity,
-                                product = product
-                            )
+                .fillMaxSize()
+                .padding(paddingValues = it)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            GlideImageLoader(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                contentScale = ContentScale.FillBounds,
+                path = product.image,
+            )
 
-                            navController.navigateUp()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        value = stringResource(R.string.product_details_add_item)
-                    )
-                }
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ProductDetail(
+                    product = product,
+                    quantity = itemQuantity,
+                    onInciseItem = {
+                        itemQuantity += 1
+                    },
+                    onRemoveItem = {
+                        if (itemQuantity > 1) {
+                            itemQuantity -= 1
+                        }
+                    },
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                ButtonPrimary(
+                    onClick = {
+                        homeViewModel.addProduct(
+                            quantity = itemQuantity,
+                            product = product
+                        )
+
+                        navController.navigateUp()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    value = stringResource(R.string.product_details_add_item)
+                )
             }
-        )
+        }
     }
 }
 
@@ -157,18 +158,21 @@ fun ProductDetail(
         ) {
             NormalText(
                 value = product.name,
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier.wrapContentWidth(),
                 fontWeight = FontWeight.Bold,
-                fontSize = 20
+                fontSize = 20,
             )
+
             NormalText(
                 value = "R$: ${product.price}",
-                modifier = Modifier.wrapContentSize(),
+                modifier = Modifier.wrapContentWidth(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20
             )
         }
+
         SetupDivider()
+
         NormalText(
             value = product.description,
             modifier = Modifier
@@ -176,7 +180,9 @@ fun ProductDetail(
                 .align(Alignment.Start),
             textAlign = androidx.compose.ui.text.style.TextAlign.Justify,
         )
+
         SetupDivider()
+
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
