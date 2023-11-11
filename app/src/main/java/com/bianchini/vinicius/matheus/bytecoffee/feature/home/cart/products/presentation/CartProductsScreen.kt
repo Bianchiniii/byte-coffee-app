@@ -1,6 +1,8 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.presentation
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +25,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.outlined.CheckCircleOutline
 import androidx.compose.material3.BottomSheetDefaults
@@ -79,17 +82,22 @@ fun CartScreen(
                 bottom = paddingValues.calculateBottomPadding()
             ),
     ) {
-        AnimatedVisibility(visible = isCartEmpty) {
+        AnimatedVisibility(visible = isCartEmpty, enter = fadeIn(), exit = fadeOut()) {
             EmptyCart()
         }
-        AnimatedVisibility(visible = !isCartEmpty) {
+        AnimatedVisibility(visible = !isCartEmpty, enter = fadeIn(), exit = fadeOut()) {
             CartList(
                 products = products,
                 onConfirmOrder = { navController.navigate(CartScreenRoutes.CartCheckout.route) },
                 totalOrder = homeViewModel.getTicketTotal(),
                 onAddMoreItems = { navController.navigate(HomeScreenRoutes.Home.route) },
                 onInciseItem = { id -> homeViewModel.increaseTicketItemQuantity(id) },
-                onRemoveItem = { id -> homeViewModel.removeTicketItem(id) },
+                onRemoveItem = { id, shouldRemoveFromCart ->
+                    homeViewModel.removeTicketItem(
+                        id,
+                        shouldRemoveFromCart
+                    )
+                },
             )
         }
     }
@@ -102,7 +110,7 @@ fun CartList(
     onConfirmOrder: () -> Unit,
     onAddMoreItems: () -> Unit,
     onInciseItem: (String) -> Unit,
-    onRemoveItem: (String) -> Unit,
+    onRemoveItem: (String, Boolean) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -114,7 +122,12 @@ fun CartList(
         ListCartItems(
             ticketItem = products,
             onInciseItem = { id -> onInciseItem.invoke(id) },
-            onRemoveItem = { id -> onRemoveItem.invoke(id) }
+            onRemoveItem = { id, shouldRemoveFromCart ->
+                onRemoveItem.invoke(
+                    id,
+                    shouldRemoveFromCart
+                )
+            }
         )
         OrderResume(totalOrder)
         ConfirmOrder(onConfirmOrder = { onConfirmOrder.invoke() })
@@ -159,7 +172,7 @@ fun TopOrderDetails(
 fun ListCartItems(
     ticketItem: List<TicketItem>,
     onInciseItem: (String) -> Unit,
-    onRemoveItem: (String) -> Unit
+    onRemoveItem: (String, Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -174,14 +187,14 @@ fun ListCartItems(
                 onInciseItem = {
                     onInciseItem.invoke(item.product.id)
                 },
-                onRemoveItem = {
-                    onRemoveItem.invoke(item.product.id)
+                onRemoveItem = { shouldRemoveFromCart ->
+                    onRemoveItem.invoke(item.product.id, shouldRemoveFromCart)
                 }
             )
             Divider(
                 color = Color.Gray,
                 thickness = 1.dp,
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
     }
@@ -230,7 +243,7 @@ fun SetupItemQuantity(
     quantity: Int,
     itemPrice: Double,
     onInciseItem: () -> Unit,
-    onRemoveItem: () -> Unit,
+    onRemoveItem: (Boolean) -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -238,32 +251,64 @@ fun SetupItemQuantity(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(modifier = Modifier.fillMaxHeight()) {
-            IconButton(
-                onClick = { onRemoveItem.invoke() },
-                modifier = Modifier
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Remove,
-                    contentDescription = stringResource(id = R.string.product_remove_item),
-                    tint = Color.Gray
+            if (quantity == 1) {
+                IconButton(
+                    onClick = { onRemoveItem.invoke(true) },
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(id = R.string.product_remove_item),
+                        tint = Color.Gray
+                    )
+                }
+
+                NormalText(
+                    value = quantity.toString(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .align(Alignment.CenterVertically),
+                    fontSize = 14
                 )
-            }
-            NormalText(
-                value = quantity.toString(),
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .align(Alignment.CenterVertically),
-                fontSize = 14
-            )
-            IconButton(
-                onClick = { onInciseItem.invoke() },
-                modifier = Modifier
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.product_add_item),
-                    tint = Color.Gray
+
+                IconButton(
+                    onClick = { onInciseItem.invoke() },
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(id = R.string.product_add_item),
+                        tint = Color.Gray
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = { onRemoveItem.invoke(false) },
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Remove,
+                        contentDescription = stringResource(id = R.string.product_remove_item),
+                        tint = Color.Gray
+                    )
+                }
+                NormalText(
+                    value = quantity.toString(),
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .align(Alignment.CenterVertically),
+                    fontSize = 14
                 )
+                IconButton(
+                    onClick = { onInciseItem.invoke() },
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(id = R.string.product_add_item),
+                        tint = Color.Gray
+                    )
+                }
             }
         }
         NormalText(
@@ -337,6 +382,7 @@ fun EmptyCart() {
             modifier = Modifier.wrapContentSize(),
             fontSize = 16,
             fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
     }
 }

@@ -22,7 +22,7 @@ interface TicketRepository {
 
     fun onTicketItemQuantityIncreased(ticketItemId: String)
 
-    fun onTicketItemRemoved(ticketItemId: String)
+    fun onTicketItemRemoved(ticketItemId: String, shouldRemoveFromCart: Boolean)
 
     fun getTicketTotal(): Double
 

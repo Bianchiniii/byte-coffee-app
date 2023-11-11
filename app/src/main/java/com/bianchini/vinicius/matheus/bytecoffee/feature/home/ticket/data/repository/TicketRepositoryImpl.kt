@@ -92,16 +92,22 @@ class TicketRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun onTicketItemRemoved(ticketItemId: String) {
+    override fun onTicketItemRemoved(ticketItemId: String, shouldRemoveFromCart: Boolean) {
         _currentTicket.update {
             it.copy(
-                products = it.products.map { ticketItem ->
-                    if (ticketItem.product.id == ticketItemId) {
-                        if (ticketItem.quantity > 1) {
-                            ticketItem.copy(quantity = ticketItem.quantity - 1)
+                products = if (shouldRemoveFromCart) {
+                    it.products.filter { ticketItem ->
+                        ticketItem.product.id != ticketItemId
+                    }.toMutableList()
+                } else {
+                    it.products.map { ticketItem ->
+                        if (ticketItem.product.id == ticketItemId) {
+                            if (ticketItem.quantity > 1) {
+                                ticketItem.copy(quantity = ticketItem.quantity - 1)
+                            } else ticketItem
                         } else ticketItem
-                    } else ticketItem
-                }.toMutableList()
+                    }.toMutableList()
+                }
             )
         }
     }
