@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel
 
+import Resource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.domain.model.LoginCredential
@@ -42,6 +43,9 @@ class AuthViewModel @Inject constructor(
 
     private val _isLoggedProfile = MutableStateFlow(false)
     val isLoggedProfile = _isLoggedProfile.asStateFlow()
+
+    private val _showLoading = MutableStateFlow(false)
+    val showLoading = _showLoading.asStateFlow()
 
     private val _form = MutableStateFlow(
         NewAccountForm(
@@ -275,13 +279,21 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login() {
+        _showLoading.value = true
+
         viewModelScope.launch {
             val request = authRegisterRepository.login(_loginCredential.value)
 
-            request.ifSuccess {
-                _isLoggingSuccessful.value = true
-            }.ifFailure {
-                _isLoggingSuccessful.value = false
+            when (request) {
+                is Resource.Result.Failure -> {
+                    _isLoggingSuccessful.value = false
+                    _showLoading.value = false
+                }
+
+                is Resource.Result.Success -> {
+                    _isLoggingSuccessful.value = true
+                    _showLoading.value = false
+                }
             }
         }
     }

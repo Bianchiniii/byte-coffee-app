@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.bianchini.vinicius.matheus.bytecoffee.R
@@ -90,7 +91,8 @@ fun EmptyOrders() {
             value = stringResource(id = R.string.orders_empty_title),
             modifier = Modifier.wrapContentSize(),
             fontWeight = FontWeight.Bold,
-            fontSize = 16
+            fontSize = 16,
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(8.dp))
         NormalText(

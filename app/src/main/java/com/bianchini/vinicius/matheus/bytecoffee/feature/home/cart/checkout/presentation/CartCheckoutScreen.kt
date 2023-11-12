@@ -1,5 +1,7 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,13 +19,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.EventNote
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -53,7 +52,8 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.loading.LoadingScreen
 import com.bianchini.vinicius.matheus.bytecoffee.graph.OrdersScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
-import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.GrayNeutral
+import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
+import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.TextColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,10 +66,11 @@ fun CartCheckoutScreen(
     val storeAddress = homeViewModel.storeAddress.collectAsStateWithLifecycle().value
 
     val paymentMethods = homeViewModel.paymentMethods.collectAsStateWithLifecycle()
-    val deliveryTypesList = homeViewModel.deliveryTypesList.collectAsStateWithLifecycle().value
+    val currentPaymentMethod = remember { mutableStateOf(paymentMethods.value.first()) }
 
     val ticketItems = homeViewModel.ticketState.collectAsStateWithLifecycle().value.products
 
+    val deliveryTypesList = homeViewModel.deliveryTypesList.collectAsStateWithLifecycle().value
     val currentDeliveryType = remember { mutableStateOf(deliveryTypesList.first()) }
 
     val orderFinished = homeViewModel.orderFinished.collectAsStateWithLifecycle().value
@@ -104,11 +105,13 @@ fun CartCheckoutScreen(
             )
         },
     ) {
-        if (loading) {
+        AnimatedVisibility(visible = loading) {
             LoadingScreen(
                 modifier = Modifier.fillMaxSize()
             )
-        } else {
+        }
+
+        AnimatedVisibility(visible = !loading) {
             Column(
                 modifier = Modifier
                     .padding(
@@ -143,17 +146,32 @@ fun CartCheckoutScreen(
                         "${storeAddress.neighborhood}, ${storeAddress.cityAndState}"
                     } else "${userAddress?.neighborhood}, ${userAddress?.cityAndState}",
                 )
-                ShowSpacer()
+                SetupDivider(
+                    modifier = Modifier
+                        .padding(
+                            vertical = 16.dp
+                        )
+                        .height(4.dp)
+                )
                 OrderResume(
                     orderProducts = ticketItems,
                     totalOrder = homeViewModel.getTicketTotal()
                 )
-                ShowSpacer()
+                SetupDivider(
+                    modifier = Modifier
+                        .padding(
+                            vertical = 16.dp
+                        )
+                        .height(4.dp)
+                )
                 SelectOrderPaymentType(
                     paymentMethods = paymentMethods.value,
-                    onPaymentMethodSelected = { homeViewModel.onSelectedPaymentMethod(it) }
+                    onPaymentMethodSelected = {
+                        homeViewModel.onSelectedPaymentMethod(it)
+                        currentPaymentMethod.value = it
+                    },
+                    currentPaymentMethod = currentPaymentMethod.value
                 )
-                ShowSpacer()
                 ConfirmOrder(confirmPayment = { homeViewModel.finishOrder() })
             }
         }
@@ -166,33 +184,29 @@ fun DeliveryTypeInfo(
     streetAndNumber: String,
     neighborhoodAndCityAndState: String,
 ) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = GrayNeutral),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            val textValue = when (deliveryType) {
-                PICKUP -> stringResource(id = R.string.cart_checkout_pickup_address)
-                DELIVERY -> stringResource(id = R.string.cart_checkout_delivery_address)
-            }
-            NormalText(
-                value = textValue,
-                modifier = Modifier,
-                fontWeight = FontWeight.Bold
-            )
-            ShowSpacer()
-            NormalText(
-                value = stringResource(
-                    id = R.string.cart_address_description,
-                    listOf(streetAndNumber, neighborhoodAndCityAndState)
-                ),
-                modifier = Modifier,
-                textAlign = TextAlign.Start
-            )
+        val textValue = when (deliveryType) {
+            PICKUP -> stringResource(id = R.string.cart_checkout_pickup_address)
+            DELIVERY -> stringResource(id = R.string.cart_checkout_delivery_address)
         }
+        NormalText(
+            value = textValue,
+            modifier = Modifier,
+            fontWeight = FontWeight.Bold
+        )
+        ShowSpacer()
+        NormalText(
+            value = stringResource(
+                id = R.string.cart_address_description,
+                listOf(streetAndNumber, neighborhoodAndCityAndState)
+            ),
+            modifier = Modifier,
+            textAlign = TextAlign.Start
+        )
     }
 }
 
@@ -213,22 +227,27 @@ fun SelectOrderDeliveryType(
     onSelectDeliveryType: (DeliveryType) -> Unit,
     currentDeliveryType: DeliveryType
 ) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = GrayNeutral),
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            deliveryTypes.forEach { text ->
-                RadioButton(
-                    selected = (text == currentDeliveryType),
-                    onClick = { onSelectDeliveryType(text) }
+        deliveryTypes.forEach { text ->
+            Box(
+                modifier = Modifier
+                    .clickable {
+                        onSelectDeliveryType(text)
+                    }
+                    .background(
+                        if (text == currentDeliveryType) Primary else Color.White
+                    )
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
+            ) {
+                NormalText(
+                    value = text.value,
+                    modifier = Modifier,
+                    textColor = if (text == currentDeliveryType) Color.White else TextColor
                 )
-                NormalText(value = text.value, modifier = Modifier)
             }
         }
     }
@@ -244,49 +263,45 @@ fun OrderResume(
     totalOrder: Double,
     orderProducts: List<TicketItem>
 ) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = GrayNeutral),
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Row {
-                Icon(
-                    imageVector = Icons.Outlined.EventNote,
-                    contentDescription = null,
-                )
-                NormalText(
-                    value = stringResource(id = R.string.cart_checkout_title),
-                    modifier = Modifier,
-                )
-            }
-            ListOrderProductsResume(orderProducts = orderProducts)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                NormalText(
-                    value = stringResource(id = R.string.cart_order_total),
-                    modifier = Modifier.wrapContentSize(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18
-                )
-                NormalText(
-                    value = "R$: $totalOrder",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.wrapContentSize(),
-                    fontSize = 18,
-                    textAlign = TextAlign.End
-                )
-            }
+    Column(modifier = Modifier.padding(8.dp)) {
+        Row {
+            Icon(
+                imageVector = Icons.Outlined.EventNote,
+                contentDescription = null,
+            )
+            NormalText(
+                value = stringResource(id = R.string.cart_checkout_title),
+                modifier = Modifier,
+            )
+        }
+        ListOrderProductsResume(orderProducts = orderProducts)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            NormalText(
+                value = stringResource(id = R.string.cart_order_total),
+                modifier = Modifier.wrapContentSize(),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18
+            )
+            NormalText(
+                value = "R$: $totalOrder",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.wrapContentSize(),
+                fontSize = 18,
+                textAlign = TextAlign.End
+            )
         }
     }
 }
 
 @Composable
-fun SetupDivider() {
+fun SetupDivider(
+    modifier: Modifier = Modifier
+) {
     Divider(
-        modifier = Modifier.padding(
-            vertical = 4.dp
-        ),
+        modifier = modifier,
         color = Color.LightGray
     )
 }
@@ -300,7 +315,11 @@ fun ListOrderProductsResume(
     ) {
         items(items = orderProducts) { item ->
             OrderProductItem(item)
-            SetupDivider()
+            SetupDivider(
+                modifier = Modifier.padding(
+                    vertical = 4.dp
+                )
+            )
         }
     }
 }
@@ -350,27 +369,31 @@ fun OrderProductItem(ticketItem: TicketItem) {
 @Composable
 fun SelectOrderPaymentType(
     paymentMethods: List<PaymentMethod>,
-    onPaymentMethodSelected: (PaymentMethod) -> Unit
+    onPaymentMethodSelected: (PaymentMethod) -> Unit,
+    currentPaymentMethod: PaymentMethod
 ) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = GrayNeutral),
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
     ) {
-        Column(
+        NormalText(
+            value = stringResource(id = R.string.cart_payment_method),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+        )
+        ShowSpacer()
+        LazyRow(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
         ) {
-            NormalText(
-                value = stringResource(id = R.string.cart_payment_method),
-                modifier = Modifier
-            )
-            LazyRow(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                items(paymentMethods) { payment ->
-                    ItemPaymentMethod(
-                        payment,
-                        onPaymentMethodSelected = { onPaymentMethodSelected(it) }
-                    )
-                }
+            items(paymentMethods) { payment ->
+                ItemPaymentMethod(
+                    isCurrentPayment = payment == currentPaymentMethod,
+                    paymentMethod = payment,
+                    onPaymentMethodSelected = {
+                        onPaymentMethodSelected(it)
+                    }
+                )
             }
         }
     }
@@ -378,16 +401,22 @@ fun SelectOrderPaymentType(
 
 @Composable
 fun ItemPaymentMethod(
+    isCurrentPayment: Boolean,
     paymentMethod: PaymentMethod,
     onPaymentMethodSelected: (PaymentMethod) -> Unit
 ) {
-    Box(modifier = Modifier
-        .padding(8.dp)
-        .clickable {
-            onPaymentMethodSelected(paymentMethod)
-        }) {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                onPaymentMethodSelected(paymentMethod)
+            }
+            .background(
+                if (isCurrentPayment) Primary else Color.White
+            )
+    ) {
         Column(
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -398,7 +427,8 @@ fun ItemPaymentMethod(
             )
             NormalText(
                 value = paymentMethod.name,
-                modifier = Modifier
+                modifier = Modifier,
+                textColor = if (isCurrentPayment) Color.White else TextColor
             )
         }
     }

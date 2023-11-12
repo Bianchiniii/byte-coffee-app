@@ -10,6 +10,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,11 +24,13 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -38,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -54,6 +58,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.mod
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
+import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.TextFieldComponents
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
@@ -70,16 +75,23 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(color = Background)
             .padding(
-                start = 16.dp,
+                start = 24.dp,
                 bottom = paddingValues.calculateBottomPadding(),
-                top = 16.dp,
-                end = 16.dp
+                top = 24.dp,
+                end = 24.dp
             )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             SetupAvatar(profileViewModel)
             Spacer(modifier = Modifier.height(36.dp))
             ChangeProfileInfo(form)
+            Divider(
+                modifier = Modifier.padding(vertical = 16.dp),
+                color = Color.LightGray
+            )
+            SetupLogout(
+                onLogoutClick = { profileViewModel.logout() }
+            )
         }
     }
 }
@@ -112,44 +124,41 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
 
     if (shouldLogout.value) {
         navController.popBackStack(Graph.HOME, true)
-        // TODO: IMPLEMENTAR NAV PARA O GRAPH HOME
+        navController.navigate(Graph.AUTHENTICATION)
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                profilePhotoPicker.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val profilePhoto = profileViewModel.profilePhoto.collectAsStateWithLifecycle()
+        /*  val profilePhoto = profileViewModel.profilePhoto.collectAsStateWithLifecycle()
 
-        if (!profilePhoto.value.isNullOrEmpty()) {
-            profileUri = profilePhoto.value!!.toUri()
+          if (!profilePhoto.value.isNullOrEmpty()) {
+              profileUri = profilePhoto.value!!.toUri()
 
-            bitmap.value = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, profileUri!!)
-            } else {
-                val source =
-                    ImageDecoder.createSource(context.contentResolver, profileUri!!)
+              bitmap.value = if (Build.VERSION.SDK_INT < 28) {
+                  MediaStore.Images.Media.getBitmap(context.contentResolver, profileUri!!)
+              } else {
+                  val source =
+                      ImageDecoder.createSource(context.contentResolver, profileUri!!)
 
-                ImageDecoder.decodeBitmap(source)
-            }
-        } else {
-            bitmap.value = null
-        }
+                  ImageDecoder.decodeBitmap(source)
+              }
+          } else {
+              bitmap.value = null
+          }
+  */
 
-        IconButton(
-            onClick = { profileViewModel.logout() },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_logout),
-                contentDescription = stringResource(
-                    id = R.string.profile_logout
-                )
-            )
-        }
-
-        // TODO: refatorar para recuperar a imagem do storage
+        // TODO: implementar alteração de foto
         bitmap.value?.let { btm ->
             Image(
                 bitmap = btm.asImageBitmap(),
@@ -172,20 +181,6 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
                 contentDescription = stringResource(R.string.profile_photo_image),
             )
         }
-
-        ButtonPrimary(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            onClick = {
-                profilePhotoPicker.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                    )
-                )
-            },
-            value = stringResource(R.string.profile_change_photo)
-        )
     }
 }
 
@@ -246,19 +241,39 @@ fun ChangeProfileInfo(form: EditAccountForm) {
             )
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Row(
+
+        ButtonPrimary(
+            onClick = {},
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 8.dp)
-        ) {
-            ButtonPrimary(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(48.dp)
-                    .align(Alignment.Bottom),
-                value = stringResource(R.string.profile_save_changes)
-            )
-        }
+                .fillMaxWidth(),
+            value = stringResource(R.string.profile_save_changes)
+        )
     }
+}
+
+@Composable
+fun SetupLogout(
+    onLogoutClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable {
+            onLogoutClick()
+        }
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.icon_logout),
+            contentDescription = stringResource(
+                id = R.string.profile_logout
+            ),
+            modifier = Modifier.size(24.dp)
+        )
+
+        NormalText(
+            value = stringResource(id = R.string.profile_logout),
+            modifier = Modifier,
+            fontSize = 16
+        )
+    }
+
 }

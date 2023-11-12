@@ -27,7 +27,7 @@ class ProfileViewModel @Inject constructor(
     private val _shouldRedirectToAuth = MutableStateFlow(false)
     val shouldRedirectToAuth = _shouldRedirectToAuth.asStateFlow()
 
-    private var _profilePhoto: MutableStateFlow<String?> = MutableStateFlow("")
+    private var _profilePhoto: MutableStateFlow<String?> = MutableStateFlow(null)
     val profilePhoto = _profilePhoto.asStateFlow()
 
     init {

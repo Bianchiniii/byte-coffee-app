@@ -2,11 +2,30 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="DefaultPreviewOfSignUpScreen">
+      <entry key="ConfirmOrderBottomSheetPreview">
+        <State />
+      </entry>
+      <entry key="DefaultPreviewOfSignUpScreen (1)">
+        <State />
+      </entry>
+      <entry key="ItemCartPreview">
         <State />
       </entry>
       <entry key="app">
-        <State />
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\mvbbi\.android\avd\Resizable_Experimental_API_33.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-11-04T13:19:17.295798900Z" />
+        </State>
       </entry>
     </value>
   </component>

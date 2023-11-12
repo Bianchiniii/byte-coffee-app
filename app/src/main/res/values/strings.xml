@@ -49,8 +49,7 @@
 
     <!-- Profile -->
     <string name="profile_change_password">Nova senha</string>
-    <string name="profile_save_changes">Salvar alterações</string>
-    <string name="profile_change_photo">Alterar foto</string>
+    <string name="profile_save_changes">Atualizar perfil</string>
     <string name="profile_photo_image">Imagem de perfil</string>
     <string name="profile_logout">Sair do app</string>
 
