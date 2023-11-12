@@ -52,7 +52,6 @@ fun ConfirmOrderBottomSheet(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Outlined.CheckCircleOutline,
@@ -60,10 +59,18 @@ fun ConfirmOrderBottomSheet(
                     tint = Color.Green,
                     modifier = Modifier.size(78.dp)
                 )
+                Spacer(modifier = Modifier.height(16.dp))
                 NormalText(
                     value = stringResource(id = R.string.cart_confirm_order_message),
                     modifier = Modifier.fillMaxWidth(),
-                    fontSize = 18,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                NormalText(
+                    value = stringResource(id = R.string.cart_confirm_order_description),
+                    modifier = Modifier.fillMaxWidth(),
+                    fontSize = 16,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )

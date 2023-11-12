@@ -83,8 +83,8 @@ class HomeViewModel @Inject constructor(
     )
     val deliveryTypesList = _deliveryTypesList.asStateFlow()
 
-    private val _orderFinished = MutableStateFlow(false)
-    val orderFinished = _orderFinished.asStateFlow()
+    private val _showOrderFinishedBottomSheet = MutableStateFlow(false)
+    val showOrderFinishedBottomSheet = _showOrderFinishedBottomSheet.asStateFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
@@ -168,12 +168,13 @@ class HomeViewModel @Inject constructor(
                 is Resource.Result.Failure -> {
                     _loading.value = false
 
+                    _showOrderFinishedBottomSheet.value = false
                 }
 
                 is Resource.Result.Success -> {
                     _loading.value = false
 
-                    _orderFinished.value = true
+                    _showOrderFinishedBottomSheet.value = true
                 }
             }
         }

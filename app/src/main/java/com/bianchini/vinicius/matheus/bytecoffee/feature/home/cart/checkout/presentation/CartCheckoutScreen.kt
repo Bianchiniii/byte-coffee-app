@@ -49,7 +49,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentatio
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.confirmorder.ConfirmOrderBottomSheet
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.feature.loading.LoadingScreen
-import com.bianchini.vinicius.matheus.bytecoffee.graph.OrdersScreenRoutes
+import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
@@ -73,13 +73,15 @@ fun CartCheckoutScreen(
     val deliveryTypesList = homeViewModel.deliveryTypesList.collectAsStateWithLifecycle().value
     val currentDeliveryType = remember { mutableStateOf(deliveryTypesList.first()) }
 
-    val orderFinished = homeViewModel.orderFinished.collectAsStateWithLifecycle().value
+    val orderFinished =
+        homeViewModel.showOrderFinishedBottomSheet.collectAsStateWithLifecycle().value
 
-    val loading = homeViewModel.loading.collectAsStateWithLifecycle().value
+    val isLoading = homeViewModel.loading.collectAsStateWithLifecycle().value
 
     if (orderFinished) {
         ConfirmOrderBottomSheet {
-            navController.navigate(OrdersScreenRoutes.Orders.route)
+            navController.popBackStack(Graph.HOME, true)
+            navController.navigate(Graph.HOME)
         }
     }
 
@@ -105,13 +107,11 @@ fun CartCheckoutScreen(
             )
         },
     ) {
-        AnimatedVisibility(visible = loading) {
-            LoadingScreen(
-                modifier = Modifier.fillMaxSize()
-            )
+        AnimatedVisibility(visible = isLoading) {
+            LoadingScreen()
         }
 
-        AnimatedVisibility(visible = !loading) {
+        AnimatedVisibility(visible = !isLoading) {
             Column(
                 modifier = Modifier
                     .padding(
@@ -155,7 +155,7 @@ fun CartCheckoutScreen(
                 )
                 OrderResume(
                     orderProducts = ticketItems,
-                    totalOrder = homeViewModel.getTicketTotal()
+                    totalOrder = homeViewModel.getTicketTotal(),
                 )
                 SetupDivider(
                     modifier = Modifier
@@ -261,9 +261,11 @@ fun ShowSpacer() {
 @Composable
 fun OrderResume(
     totalOrder: Double,
-    orderProducts: List<TicketItem>
+    orderProducts: List<TicketItem>,
 ) {
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(
+        modifier = Modifier.padding(8.dp)
+    ) {
         Row {
             Icon(
                 imageVector = Icons.Outlined.EventNote,
@@ -311,15 +313,12 @@ fun ListOrderProductsResume(
     orderProducts: List<TicketItem>
 ) {
     LazyColumn(
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier
+            .padding(vertical = 8.dp)
     ) {
         items(items = orderProducts) { item ->
             OrderProductItem(item)
-            SetupDivider(
-                modifier = Modifier.padding(
-                    vertical = 4.dp
-                )
-            )
+            SetupDivider(modifier = Modifier.padding(vertical = 4.dp))
         }
     }
 }

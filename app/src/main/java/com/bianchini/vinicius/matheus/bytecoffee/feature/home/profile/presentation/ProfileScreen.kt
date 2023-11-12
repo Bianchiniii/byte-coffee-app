@@ -1,10 +1,7 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,11 +17,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -32,7 +27,6 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,12 +44,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.EditAccountForm
-import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
@@ -69,6 +61,15 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel,
 ) {
     val form by profileViewModel.form.collectAsStateWithLifecycle()
+
+    val navController = rememberNavController()
+
+    val shouldLogout = profileViewModel.shouldRedirectToAuth.collectAsStateWithLifecycle()
+
+    if (shouldLogout.value) {
+        navController.popBackStack()
+        // TODO: implementar navegação para tela de auth
+    }
 
     Box(
         modifier = Modifier
@@ -116,15 +117,6 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
 
             profileViewModel.saveProfilePhoto(it)
         }
-    }
-
-    val navController = rememberNavController()
-
-    val shouldLogout = profileViewModel.shouldRedirectToAuth.collectAsStateWithLifecycle()
-
-    if (shouldLogout.value) {
-        navController.popBackStack(Graph.HOME, true)
-        navController.navigate(Graph.AUTHENTICATION)
     }
 
     Column(

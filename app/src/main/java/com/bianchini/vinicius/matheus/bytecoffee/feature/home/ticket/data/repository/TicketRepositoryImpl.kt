@@ -1,6 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.data.repository
 
-import android.util.Log
+import Resource
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.DeliveryType
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.PaymentMethod
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.domain.model.OrderProducts
@@ -10,7 +10,6 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.rep
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.Ticket
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
-import com.bianchini.vinicius.matheus.bytecoffee.services.AisleService
 import com.bianchini.vinicius.matheus.bytecoffee.services.OrderService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -145,6 +144,15 @@ class TicketRepositoryImpl @Inject constructor(
         }.await()
 
         if (request.isSuccessful) {
+            _currentTicket.update {
+                Ticket(
+                    products = mutableListOf(),
+                    paymentMethod = null,
+                    deliveryType = null,
+                    isActive = false
+                )
+            }
+
             Resource.Result.Success(true)
         } else {
             Resource.Result.Failure(Throwable("Erro ao finalizar pedido"))
