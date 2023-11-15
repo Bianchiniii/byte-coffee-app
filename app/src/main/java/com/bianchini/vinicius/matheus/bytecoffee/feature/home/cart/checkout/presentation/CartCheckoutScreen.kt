@@ -81,30 +81,16 @@ fun CartCheckoutScreen(
 
     val isLoading = homeViewModel.loading.collectAsStateWithLifecycle().value
 
-    val uiState by homeViewModel.uiEvents.collectAsStateWithLifecycle(initialValue = null)
+    val shouldShowFinishedOrder by homeViewModel.showBottomSheetOrderFinished.collectAsStateWithLifecycle()
 
-    when(uiState){
-        UiEvents.ShowOrderFinishedBottomSheet -> {
-            ConfirmOrderBottomSheet {
-                navController.popBackStack()
-                navController.navigate(Graph.HOME)
-            }
+    if (shouldShowFinishedOrder) {
+        ConfirmOrderBottomSheet {
+            homeViewModel.updateShouldShowBottomSheetOrderFinished(false)
+
+            navController.popBackStack()
+            navController.navigate(Graph.HOME)
         }
-        null -> {}
     }
-
-   /* ObserverWithLifecycle(
-        homeViewModel.uiEvents
-    ) {
-        when (it) {
-            is UiEvents.ShowOrderFinishedBottomSheet -> {
-                ConfirmOrderBottomSheet {
-                    navController.popBackStack()
-                    navController.navigate(Graph.HOME)
-                }
-            }
-        }
-    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

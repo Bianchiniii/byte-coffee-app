@@ -33,7 +33,7 @@ fun LoadingScreen(
     circleSize: Dp = 25.dp,
     circleColor: Color = Primary,
     spaceBetween: Dp = 10.dp,
-    travelDistance: Dp = 20.dp
+    travelDistance: Dp = 20.dp,
 ) {
     val circles = listOf(
         remember { Animatable(initialValue = 0f) },

@@ -1,5 +1,6 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation
 
+import Resource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.Money
@@ -20,10 +21,8 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.mode
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -85,8 +84,8 @@ class HomeViewModel @Inject constructor(
     )
     val deliveryTypesList = _deliveryTypesList.asStateFlow()
 
-    private val _uiEvents = Channel<UiEvents>()
-    val uiEvents = _uiEvents.receiveAsFlow()
+    private val _showBottomSheetOrderFinished = MutableStateFlow(false)
+    val showBottomSheetOrderFinished = _showBottomSheetOrderFinished.asStateFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
@@ -161,14 +160,20 @@ class HomeViewModel @Inject constructor(
                 is Resource.Result.Failure -> {
                     _loading.value = false
 
-                    _uiEvents.send(UiEvents.ShowOrderFinishedBottomSheet)
+                    updateShouldShowBottomSheetOrderFinished(false)
                 }
 
                 is Resource.Result.Success -> {
                     _loading.value = false
+
+                    updateShouldShowBottomSheetOrderFinished(true)
                 }
             }
         }
+    }
+
+    fun updateShouldShowBottomSheetOrderFinished(shouldShow: Boolean) {
+        _showBottomSheetOrderFinished.value = shouldShow
     }
 
     fun onSelectedPaymentMethod(paymentMethod: PaymentMethod) {
@@ -178,8 +183,4 @@ class HomeViewModel @Inject constructor(
     fun onSelectedDeliveryType(deliveryType: DeliveryType) {
         ticketRepository.setDeliveryType(deliveryType)
     }
-}
-
-sealed class UiEvents {
-    object ShowOrderFinishedBottomSheet : UiEvents()
 }
