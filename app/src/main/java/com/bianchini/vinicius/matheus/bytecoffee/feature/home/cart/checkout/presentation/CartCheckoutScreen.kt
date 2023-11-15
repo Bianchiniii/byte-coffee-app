@@ -28,11 +28,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +50,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.doma
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.DeliveryType.PICKUP
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.domain.model.PaymentMethod
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.UiEvents
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.confirmorder.ConfirmOrderBottomSheet
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.model.TicketItem
 import com.bianchini.vinicius.matheus.bytecoffee.feature.loading.LoadingScreen
@@ -54,6 +59,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.TextColor
+import com.bianchini.vinicius.matheus.bytecoffee.util.ObserverWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,17 +79,32 @@ fun CartCheckoutScreen(
     val deliveryTypesList = homeViewModel.deliveryTypesList.collectAsStateWithLifecycle().value
     val currentDeliveryType = remember { mutableStateOf(deliveryTypesList.first()) }
 
-    val orderFinished =
-        homeViewModel.showOrderFinishedBottomSheet.collectAsStateWithLifecycle().value
-
     val isLoading = homeViewModel.loading.collectAsStateWithLifecycle().value
 
-    if (orderFinished) {
-        ConfirmOrderBottomSheet {
-            navController.popBackStack(Graph.HOME, true)
-            navController.navigate(Graph.HOME)
+    val uiState by homeViewModel.uiEvents.collectAsStateWithLifecycle(initialValue = null)
+
+    when(uiState){
+        UiEvents.ShowOrderFinishedBottomSheet -> {
+            ConfirmOrderBottomSheet {
+                navController.popBackStack()
+                navController.navigate(Graph.HOME)
+            }
         }
+        null -> {}
     }
+
+   /* ObserverWithLifecycle(
+        homeViewModel.uiEvents
+    ) {
+        when (it) {
+            is UiEvents.ShowOrderFinishedBottomSheet -> {
+                ConfirmOrderBottomSheet {
+                    navController.popBackStack()
+                    navController.navigate(Graph.HOME)
+                }
+            }
+        }
+    }*/
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

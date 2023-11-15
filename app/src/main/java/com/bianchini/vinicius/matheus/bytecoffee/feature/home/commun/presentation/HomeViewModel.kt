@@ -20,8 +20,10 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.mode
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.ticket.domain.repository.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -83,8 +85,8 @@ class HomeViewModel @Inject constructor(
     )
     val deliveryTypesList = _deliveryTypesList.asStateFlow()
 
-    private val _showOrderFinishedBottomSheet = MutableStateFlow(false)
-    val showOrderFinishedBottomSheet = _showOrderFinishedBottomSheet.asStateFlow()
+    private val _uiEvents = Channel<UiEvents>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
@@ -124,15 +126,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // TODO: sera implementado futuramente
-    /*private fun getCategories() {
-        viewModelScope.launch {
-            val request = aisleRepository.getAisleCategories()
-
-            _categories.value = request.getOrNull()
-        }
-    }*/
-
     fun findProductById(productId: String): Product? {
         return _products.value?.find { it.id == productId }
     }
@@ -168,13 +161,11 @@ class HomeViewModel @Inject constructor(
                 is Resource.Result.Failure -> {
                     _loading.value = false
 
-                    _showOrderFinishedBottomSheet.value = false
+                    _uiEvents.send(UiEvents.ShowOrderFinishedBottomSheet)
                 }
 
                 is Resource.Result.Success -> {
                     _loading.value = false
-
-                    _showOrderFinishedBottomSheet.value = true
                 }
             }
         }
@@ -187,4 +178,8 @@ class HomeViewModel @Inject constructor(
     fun onSelectedDeliveryType(deliveryType: DeliveryType) {
         ticketRepository.setDeliveryType(deliveryType)
     }
+}
+
+sealed class UiEvents {
+    object ShowOrderFinishedBottomSheet : UiEvents()
 }

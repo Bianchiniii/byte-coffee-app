@@ -60,6 +60,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.graph.DetailsScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeNavGraph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
+import com.bianchini.vinicius.matheus.bytecoffee.graph.OrdersScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
@@ -139,7 +140,14 @@ fun ContentHomeScreen(
     ) {
         ProfileInfoAndNotification(
             profile.value?.name,
-            onNavigateToOrders = { navController.navigate(Graph.ORDERS) }
+            onNavigateToOrders = {
+                navController.navigate(
+                    OrdersScreenRoutes.Orders.route.replace(
+                        "{profileId}",
+                        profile.value?.id!!
+                    )
+                )
+            }
         )
         Spacer(modifier = Modifier.height(15.dp))
         AnimatedVisibility(visible = !categories.value.isNullOrEmpty()) {

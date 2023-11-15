@@ -19,7 +19,8 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.presentation
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.checkout.presentation.CartCheckoutScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.cart.products.presentation.CartScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.presentation.OrdersScreen
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.presentation.OrdersRoute
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.presentation.OrdersViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.product.ProductScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileScreen
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.ProfileViewModel
@@ -48,7 +49,7 @@ fun HomeNavGraph(
             val profileViewModel = hiltViewModel<ProfileViewModel>()
             ProfileScreen(paddingValues, profileViewModel)
         }
-        ordersNavGraph(navController = navController, viewModel)
+        ordersNavGraph(navHostController = navController)
         detailsNavGraph(navController = navController, viewModel)
     }
 }
@@ -82,22 +83,34 @@ sealed class CartScreenRoutes(val route: String) {
     object CartCheckout : CartScreenRoutes(route = "checkout")
 }
 
-fun NavGraphBuilder.ordersNavGraph(navController: NavHostController, viewModel: HomeViewModel) {
+fun NavGraphBuilder.ordersNavGraph(
+    navHostController: NavHostController,
+
+    ) {
     navigation(
         route = Graph.ORDERS,
         startDestination = OrdersScreenRoutes.Orders.route
     ) {
-        composable(route = OrdersScreenRoutes.Orders.route) {
-            OrdersScreen(
-                navController = navController,
-                viewModel = viewModel
+        composable(
+            route = OrdersScreenRoutes.Orders.route,
+            arguments = listOf(
+                navArgument("profileId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val profileId = backStackEntry.arguments?.getString("profileId")
+            OrdersRoute(
+                navHostController = navHostController,
+                ordersViewModel = hiltViewModel<OrdersViewModel>(),
+                userId = profileId!!
             )
         }
     }
 }
 
 sealed class OrdersScreenRoutes(val route: String) {
-    object Orders : OrdersScreenRoutes(route = "orders")
+    object Orders : OrdersScreenRoutes(route = "orders/{profileId}")
 }
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController, viewModel: HomeViewModel) {

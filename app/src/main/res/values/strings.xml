@@ -56,6 +56,7 @@
     <!-- ORDERS -->
     <string name="orders_empty_title">Parece que você ainda não realizou nenhum pedido!</string>
     <string name="orders_empty_description">E ai, partiu fazer o primeiro pedido?!</string>
+    <string name="order_list_description">Listagem de pedidos realizados</string>
 
     <!-- Cart -->
     <string name="cart_empty_state_title">Seu carrinho está vazio</string>

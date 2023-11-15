@@ -1,5 +1,7 @@
 package com.bianchini.vinicius.matheus.bytecoffee.feature.home.di
 
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.data.repository.OrdersRepositoryImpl
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.orders.domain.repository.OrdersRepository
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.repository.ProfileAddressRepositoryImpl
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.repository.ProfileRepositoryImpl
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.data.repository.TokenRepositoryImpl
@@ -38,4 +40,9 @@ abstract class RepositoryModule {
     abstract fun bindsTicketRepository(
         ticketRepositoryImpl: TicketRepositoryImpl
     ): TicketRepository
+
+    @Binds
+    abstract fun bindsOrdersRepository(
+        ordersRepositoryImpl: OrdersRepositoryImpl
+    ): OrdersRepository
 }

@@ -14,10 +14,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +48,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -55,96 +61,111 @@ fun LoginScreen(
     val isLoggingSuccessful by authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
     val showLoading by authViewModel.showLoading.collectAsStateWithLifecycle()
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // TODO: alterar para o lifecycle
+    LaunchedEffect(true) {
+        scope.launch {
+            snackbarHostState.showSnackbar("Snackbar")
+        }
+    }
+
     if (isLoggingSuccessful) {
         navController.popBackStack()
         navController.navigate(Graph.HOME)
     }
 
-    Surface(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White)
             .padding(24.dp),
-    ) {
-        AnimatedVisibility(visible = showLoading) {
-            LoadingScreen()
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         }
+    ) {
+        Column(modifier = Modifier.padding(it)) {
+            AnimatedVisibility(visible = showLoading) {
+                LoadingScreen()
+            }
 
-        AnimatedVisibility(visible = !showLoading) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(id = R.string.app_name),
-                    modifier = Modifier.fillMaxWidth(),
-                    style = TextStyle(
-                        color = Primary,
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic,
-                    ),
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(64.dp))
-                LoginField(
-                    value = loginCredential.login,
-                    onChange = {
-                        authViewModel.onTextInputChangedEventLogin(
-                            OnTextInputChangedEventLogin.OnEmailChangedLogin(
-                                it
+            AnimatedVisibility(visible = !showLoading) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        modifier = Modifier.fillMaxWidth(),
+                        style = TextStyle(
+                            color = Primary,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic,
+                        ),
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(64.dp))
+                    LoginField(
+                        value = loginCredential.login,
+                        onChange = {
+                            authViewModel.onTextInputChangedEventLogin(
+                                OnTextInputChangedEventLogin.OnEmailChangedLogin(
+                                    it
+                                )
                             )
-                        )
-                    },
-                    isError = loginCredentialError.loginError != null,
-                    supportingText = if (loginCredentialError.loginError != null) {
-                        stringResource(id = loginCredentialError.loginError!!)
-                    } else null,
-                    modifier = Modifier.fillMaxWidth(),
-                    labelValue = "Email",
-                    placeholder = stringResource(id = R.string.login_email),
-                )
-                PasswordTextField(
-                    value = loginCredential.password,
-                    labelValue = stringResource(id = R.string.sign_up_password),
-                    placeholder = stringResource(id = R.string.sign_up_placeholder_password),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(4.dp)),
-                    leadingIcon = Icons.Filled.Password,
-                    isError = loginCredentialError.passwordError != null,
-                    supportingText = if (loginCredentialError.passwordError != null) {
-                        stringResource(id = loginCredentialError.passwordError!!)
-                    } else null,
-                    onValueChanged = {
-                        authViewModel.onTextInputChangedEventLogin(
-                            OnTextInputChangedEventLogin.OnPasswordChangedLogin(
-                                it
+                        },
+                        isError = loginCredentialError.loginError != null,
+                        supportingText = if (loginCredentialError.loginError != null) {
+                            stringResource(id = loginCredentialError.loginError!!)
+                        } else null,
+                        modifier = Modifier.fillMaxWidth(),
+                        labelValue = "Email",
+                        placeholder = stringResource(id = R.string.login_email),
+                    )
+                    PasswordTextField(
+                        value = loginCredential.password,
+                        labelValue = stringResource(id = R.string.sign_up_password),
+                        placeholder = stringResource(id = R.string.sign_up_placeholder_password),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(4.dp)),
+                        leadingIcon = Icons.Filled.Password,
+                        isError = loginCredentialError.passwordError != null,
+                        supportingText = if (loginCredentialError.passwordError != null) {
+                            stringResource(id = loginCredentialError.passwordError!!)
+                        } else null,
+                        onValueChanged = {
+                            authViewModel.onTextInputChangedEventLogin(
+                                OnTextInputChangedEventLogin.OnPasswordChangedLogin(
+                                    it
+                                )
                             )
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                ButtonPrimary(
-                    onClick = { authViewModel.login() },
-                    modifier = Modifier.fillMaxWidth(),
-                    value = stringResource(id = R.string.sign_up),
-                    enabled = loginCredentialEnabled
-                )
-                ClickableText(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.End)
-                        .padding(top = 8.dp),
-                    text = AnnotatedString(stringResource(R.string.sign_up_create_account)),
-                    style = TextStyle(
-                        color = Primary, fontSize = 16.sp
-                    ),
-                    onClick = {
-                        navController.navigate(AuthScreenRoutes.SignUp.route)
-                    }
-                )
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    ButtonPrimary(
+                        onClick = { authViewModel.login() },
+                        modifier = Modifier.fillMaxWidth(),
+                        value = stringResource(id = R.string.sign_up),
+                        enabled = loginCredentialEnabled
+                    )
+                    ClickableText(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(Alignment.End)
+                            .padding(top = 8.dp),
+                        text = AnnotatedString(stringResource(R.string.sign_up_create_account)),
+                        style = TextStyle(
+                            color = Primary, fontSize = 16.sp
+                        ),
+                        onClick = {
+                            navController.navigate(AuthScreenRoutes.SignUp.route)
+                        }
+                    )
+                }
             }
         }
     }
