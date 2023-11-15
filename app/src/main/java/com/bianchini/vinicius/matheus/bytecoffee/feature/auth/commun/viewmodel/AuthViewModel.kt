@@ -15,13 +15,13 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.signup.presentatio
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.repository.profile.ProfileLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import extension.getOrNull
-import extension.ifFailure
-import extension.ifSuccess
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,6 +40,9 @@ class AuthViewModel @Inject constructor(
 
     private val _isLoggingSuccessful = MutableStateFlow(false)
     val isLoggingSuccessful = _isLoggingSuccessful.asStateFlow()
+
+    private val _uiEvents = Channel<UiEvents>()
+    val uiEventsFlow = _uiEvents.receiveAsFlow()
 
     private val _isLoggedProfile = MutableStateFlow(false)
     val isLoggedProfile = _isLoggedProfile.asStateFlow()
@@ -287,6 +290,7 @@ class AuthViewModel @Inject constructor(
             when (request) {
                 is Resource.Result.Failure -> {
                     _isLoggingSuccessful.value = false
+                    _uiEvents.send(UiEvents.ShowSnackbarMessage("Erro ao fazer login"))
                     _showLoading.value = false
                 }
 
@@ -356,4 +360,9 @@ class AuthViewModel @Inject constructor(
     companion object {
         private const val DEFAULT_ROLE = "user"
     }
+}
+
+sealed class UiEvents {
+
+    data class ShowSnackbarMessage(val message: String) : UiEvents()
 }

@@ -19,7 +19,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.AuthViewModel
+import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.commun.viewmodel.UiEvents
 import com.bianchini.vinicius.matheus.bytecoffee.feature.auth.login.presentation.event.OnTextInputChangedEventLogin
 import com.bianchini.vinicius.matheus.bytecoffee.feature.loading.LoadingScreen
 import com.bianchini.vinicius.matheus.bytecoffee.graph.AuthScreenRoutes
@@ -48,6 +48,7 @@ import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Primary
+import com.bianchini.vinicius.matheus.bytecoffee.util.ObserverWithLifecycle
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,10 +65,13 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // TODO: alterar para o lifecycle
-    LaunchedEffect(true) {
-        scope.launch {
-            snackbarHostState.showSnackbar("Snackbar")
+    ObserverWithLifecycle(flow = authViewModel.uiEventsFlow) {
+        when (it) {
+            is UiEvents.ShowSnackbarMessage -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(it.message)
+                }
+            }
         }
     }
 
@@ -79,19 +83,24 @@ fun LoginScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
-            .padding(24.dp),
+            .background(color = Color.White),
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .padding(24.dp),
+        ) {
             AnimatedVisibility(visible = showLoading) {
                 LoadingScreen()
             }
 
             AnimatedVisibility(visible = !showLoading) {
                 Column(
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
