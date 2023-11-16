@@ -45,30 +45,37 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.bianchini.vinicius.matheus.bytecoffee.R
-import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.domain.model.EditAccountForm
+import com.bianchini.vinicius.matheus.bytecoffee.feature.home.profile.presentation.event.OnFormValueChanged
+import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
+import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.ButtonPrimary
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.LoginField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.NormalText
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.PasswordTextField
 import com.bianchini.vinicius.matheus.bytecoffee.ui.components.TextFieldComponents
 import com.bianchini.vinicius.matheus.bytecoffee.ui.theme.Background
+import com.bianchini.vinicius.matheus.bytecoffee.util.ObserverWithLifecycle
 
 @Composable
 fun ProfileScreen(
     paddingValues: PaddingValues,
     profileViewModel: ProfileViewModel,
+    navController: NavController
 ) {
-    val form by profileViewModel.form.collectAsStateWithLifecycle()
+    ObserverWithLifecycle(flow = profileViewModel.uiNavigationEvent) {
+        when (it) {
+            UiNavigationEvent.NavigateToHome -> {
+                navController.navigate(HomeScreenRoutes.Home.route)
+            }
 
-    val navController = rememberNavController()
-
-    val shouldLogout = profileViewModel.shouldRedirectToAuth.collectAsStateWithLifecycle()
-
-    if (shouldLogout.value) {
-        navController.popBackStack()
-        // TODO: implementar navegação para tela de auth
+            UiNavigationEvent.NavigateToAuth -> {
+//                navController.()
+                // TODO: implementar navegação para tela de auth
+            }
+        }
     }
 
     Box(
@@ -85,7 +92,7 @@ fun ProfileScreen(
         Column(modifier = Modifier.fillMaxSize()) {
             SetupAvatar(profileViewModel)
             Spacer(modifier = Modifier.height(36.dp))
-            ChangeProfileInfo(form)
+            ChangeProfileInfo(profileViewModel)
             Divider(
                 modifier = Modifier.padding(vertical = 16.dp),
                 color = Color.LightGray
@@ -114,8 +121,6 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
     ) { uri ->
         uri?.let {
             profileUri = it
-
-            profileViewModel.saveProfilePhoto(it)
         }
     }
 
@@ -177,7 +182,11 @@ fun SetupAvatar(profileViewModel: ProfileViewModel) {
 }
 
 @Composable
-fun ChangeProfileInfo(form: EditAccountForm) {
+fun ChangeProfileInfo(
+    profileViewModel: ProfileViewModel,
+) {
+    val form by profileViewModel.form.collectAsStateWithLifecycle()
+
     Column(modifier = Modifier.wrapContentSize()) {
         TextFieldComponents(
             value = form.name,
@@ -187,7 +196,11 @@ fun ChangeProfileInfo(form: EditAccountForm) {
                 .clip(RoundedCornerShape(4.dp)),
             leadingIcon = Icons.Filled.Person,
             onValueChanged = {
-
+                profileViewModel.onFormValueChanged(
+                    OnFormValueChanged.OnNameChanged(
+                        it
+                    )
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -195,14 +208,18 @@ fun ChangeProfileInfo(form: EditAccountForm) {
             )
         )
         TextFieldComponents(
-            value = form.lastName,
+            value = form.surname,
             labelValue = stringResource(id = R.string.sign_up_last_name),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(4.dp)),
             Icons.Filled.Person,
             onValueChanged = {
-
+                profileViewModel.onFormValueChanged(
+                    OnFormValueChanged.OnLastNameChanged(
+                        it
+                    )
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -211,7 +228,13 @@ fun ChangeProfileInfo(form: EditAccountForm) {
         )
         LoginField(
             value = form.email,
-            onChange = { },
+            onChange = {
+                profileViewModel.onFormValueChanged(
+                    OnFormValueChanged.OnEmailChanged(
+                        it
+                    )
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             labelValue = "Email",
             placeholder = stringResource(id = R.string.login_email),
@@ -225,7 +248,11 @@ fun ChangeProfileInfo(form: EditAccountForm) {
             leadingIcon = Icons.Filled.Password,
             placeholder = stringResource(id = R.string.sign_up_placeholder_password),
             onValueChanged = {
-
+                profileViewModel.onFormValueChanged(
+                    OnFormValueChanged.OnPasswordChanged(
+                        it
+                    )
+                )
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -235,7 +262,9 @@ fun ChangeProfileInfo(form: EditAccountForm) {
         Spacer(modifier = Modifier.height(24.dp))
 
         ButtonPrimary(
-            onClick = {},
+            onClick = {
+                profileViewModel.updateProfile()
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             value = stringResource(R.string.profile_save_changes)

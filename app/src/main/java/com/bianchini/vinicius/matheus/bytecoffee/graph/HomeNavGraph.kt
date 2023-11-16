@@ -47,7 +47,7 @@ fun HomeNavGraph(
         cartNavGraph(navController = navController, viewModel, paddingValues)
         composable(route = HomeScreenRoutes.Profile.route) {
             val profileViewModel = hiltViewModel<ProfileViewModel>()
-            ProfileScreen(paddingValues, profileViewModel)
+            ProfileScreen(paddingValues, profileViewModel, navController)
         }
         ordersNavGraph(navHostController = navController)
         detailsNavGraph(navController = navController, viewModel)
