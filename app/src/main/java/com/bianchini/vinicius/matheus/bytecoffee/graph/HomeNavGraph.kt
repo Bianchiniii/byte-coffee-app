@@ -51,6 +51,7 @@ fun HomeNavGraph(
         }
         ordersNavGraph(navHostController = navController)
         detailsNavGraph(navController = navController, viewModel)
+        authNavGraph(navController = navController)
     }
 }
 

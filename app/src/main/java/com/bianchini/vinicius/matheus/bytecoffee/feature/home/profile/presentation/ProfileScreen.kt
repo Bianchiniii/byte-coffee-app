@@ -68,12 +68,13 @@ fun ProfileScreen(
     ObserverWithLifecycle(flow = profileViewModel.uiNavigationEvent) {
         when (it) {
             UiNavigationEvent.NavigateToHome -> {
+                navController.popBackStack()
                 navController.navigate(HomeScreenRoutes.Home.route)
             }
 
             UiNavigationEvent.NavigateToAuth -> {
-//                navController.()
-                // TODO: implementar navegação para tela de auth
+                navController.popBackStack()
+                navController.navigate(Graph.AUTHENTICATION)
             }
         }
     }

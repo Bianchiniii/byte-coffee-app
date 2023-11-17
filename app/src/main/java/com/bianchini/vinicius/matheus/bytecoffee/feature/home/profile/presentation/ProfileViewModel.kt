@@ -100,7 +100,7 @@ class ProfileViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            profileLocalDataSource.deleteProfile(_userProfile?.id ?: "")
+            profileLocalDataSource.deleteProfile(_userProfile?.id!!)
             profileAddressDataSource.deleteAllAddress()
 
             _uiNavigationEvent.send(UiNavigationEvent.NavigateToAuth)
