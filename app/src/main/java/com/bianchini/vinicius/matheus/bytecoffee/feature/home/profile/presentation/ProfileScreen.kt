@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -279,9 +280,11 @@ fun SetupLogout(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable {
-            onLogoutClick()
-        }
+        modifier = Modifier
+            .clickable {
+                onLogoutClick()
+            }
+            .padding(8.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.icon_logout),
@@ -290,6 +293,8 @@ fun SetupLogout(
             ),
             modifier = Modifier.size(24.dp)
         )
+
+        Spacer(modifier = Modifier.width(8.dp))
 
         NormalText(
             value = stringResource(id = R.string.profile_logout),

@@ -38,9 +38,6 @@ class AuthViewModel @Inject constructor(
     private val _successCreateAccount = MutableStateFlow(false)
     val successCreateAccount = _successCreateAccount.asStateFlow()
 
-    private val _isLoggingSuccessful = MutableStateFlow(false)
-    val isLoggingSuccessful = _isLoggingSuccessful.asStateFlow()
-
     private val _uiEvents = Channel<UiEvents>()
     val uiEventsFlow = _uiEvents.receiveAsFlow()
 
@@ -64,7 +61,7 @@ class AuthViewModel @Inject constructor(
     val formError = _formError.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isRegisterEnabled = _formError.mapLatest {
+    val isRegisterEnabled = _form.mapLatest {
         isInputRegisterValid()
     }.stateIn(
         scope = viewModelScope,
@@ -79,7 +76,7 @@ class AuthViewModel @Inject constructor(
     val loginCredentialError = _loginCredentialError.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val isLoginCredentialEnabled = _loginCredentialError.mapLatest {
+    val isLoginCredentialEnabled = _loginCredential.mapLatest {
         isLoginInputsValid()
     }.stateIn(
         scope = viewModelScope,
@@ -289,13 +286,12 @@ class AuthViewModel @Inject constructor(
 
             when (request) {
                 is Resource.Result.Failure -> {
-                    _isLoggingSuccessful.value = false
                     _uiEvents.send(UiEvents.ShowSnackbarMessage("Erro ao fazer login"))
                     _showLoading.value = false
                 }
 
                 is Resource.Result.Success -> {
-                    _isLoggingSuccessful.value = true
+                    _uiEvents.send(UiEvents.RedirectToHome)
                     _showLoading.value = false
                 }
             }
@@ -365,4 +361,6 @@ class AuthViewModel @Inject constructor(
 sealed class UiEvents {
 
     data class ShowSnackbarMessage(val message: String) : UiEvents()
+
+    object RedirectToHome : UiEvents()
 }

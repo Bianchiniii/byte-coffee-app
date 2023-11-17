@@ -59,7 +59,6 @@ fun LoginScreen(
     val loginCredential by authViewModel.loginCredential.collectAsStateWithLifecycle()
     val loginCredentialError by authViewModel.loginCredentialError.collectAsStateWithLifecycle()
     val loginCredentialEnabled by authViewModel.isLoginCredentialEnabled.collectAsStateWithLifecycle()
-    val isLoggingSuccessful by authViewModel.isLoggingSuccessful.collectAsStateWithLifecycle()
     val showLoading by authViewModel.showLoading.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
@@ -72,12 +71,12 @@ fun LoginScreen(
                     snackbarHostState.showSnackbar(it.message)
                 }
             }
-        }
-    }
 
-    if (isLoggingSuccessful) {
-        navController.popBackStack()
-        navController.navigate(Graph.HOME)
+            UiEvents.RedirectToHome -> {
+                navController.popBackStack()
+                navController.navigate(Graph.HOME)
+            }
+        }
     }
 
     Scaffold(
@@ -95,7 +94,7 @@ fun LoginScreen(
                 .padding(24.dp),
         ) {
             AnimatedVisibility(visible = showLoading) {
-                LoadingScreen()
+                LoadingScreen(modifier = Modifier.fillMaxSize())
             }
 
             AnimatedVisibility(visible = !showLoading) {

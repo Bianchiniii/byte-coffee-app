@@ -110,7 +110,7 @@ fun CartCheckoutScreen(
         },
     ) {
         AnimatedVisibility(visible = isLoading) {
-            LoadingScreen()
+            LoadingScreen(modifier = Modifier.fillMaxSize())
         }
 
         AnimatedVisibility(visible = !isLoading) {
