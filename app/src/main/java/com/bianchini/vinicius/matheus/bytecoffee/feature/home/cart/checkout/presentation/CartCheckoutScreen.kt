@@ -204,7 +204,8 @@ fun DeliveryTypeInfo(
         NormalText(
             value = stringResource(
                 id = R.string.cart_address_description,
-                listOf(streetAndNumber, neighborhoodAndCityAndState)
+                streetAndNumber,
+                neighborhoodAndCityAndState
             ),
             modifier = Modifier,
             textAlign = TextAlign.Start

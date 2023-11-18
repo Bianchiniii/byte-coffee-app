@@ -79,7 +79,8 @@ class HomeViewModel @Inject constructor(
 
     private val _deliveryTypesList = MutableStateFlow(
         listOf(
-            DeliveryType.PICKUP, DeliveryType.DELIVERY
+            DeliveryType.PICKUP,
+            DeliveryType.DELIVERY
         )
     )
     val deliveryTypesList = _deliveryTypesList.asStateFlow()
@@ -93,9 +94,6 @@ class HomeViewModel @Inject constructor(
     init {
         getUser()
         getAddress()
-
-        // TODO: sera implementado futuramente
-//        getCategories()
 
         getProducts()
 
@@ -113,6 +111,7 @@ class HomeViewModel @Inject constructor(
     private fun getAddress() {
         viewModelScope.launch {
             val localAddress = profileLocalAddressDataSource.findAddress()
+
             _userAddress.value = localAddress.getOrNull()
         }
     }

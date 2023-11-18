@@ -22,7 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -57,7 +57,6 @@ import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.aisle.domain.model.Product
 import com.bianchini.vinicius.matheus.bytecoffee.feature.home.commun.presentation.HomeViewModel
 import com.bianchini.vinicius.matheus.bytecoffee.graph.DetailsScreenRoutes
-import com.bianchini.vinicius.matheus.bytecoffee.graph.Graph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeNavGraph
 import com.bianchini.vinicius.matheus.bytecoffee.graph.HomeScreenRoutes
 import com.bianchini.vinicius.matheus.bytecoffee.graph.OrdersScreenRoutes
@@ -330,8 +329,9 @@ fun ProfileInfoAndNotification(
         }
         IconButton(onClick = { onNavigateToOrders() }) {
             Icon(
-                Icons.Filled.Notifications,
+                Icons.Filled.NotificationsActive,
                 contentDescription = stringResource(R.string.util_notification_icon),
+                tint = Color.Red
             )
         }
     }
