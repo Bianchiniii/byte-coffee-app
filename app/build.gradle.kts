@@ -88,6 +88,8 @@ dependencies {
     implementation(libs.resources.utils)
     implementation(libs.androidx.ui.android)
     testImplementation(libs.junit)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
